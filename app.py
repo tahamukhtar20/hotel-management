@@ -16,19 +16,9 @@ def index():
     return render_template("index.html")
 
 
-# @app.route("/signup", methods=["POST"])
-# def signup_page():
-#     return redirect(url_for("signup_page"))
-
-
 @app.route("/signup_page", methods=["GET"])
 def signup():
     return render_template("Signup.html")
-
-
-# @app.route("/login", methods=["GET"])
-# def login():
-#     return redirect(url_for("login_page"))
 
 
 @app.route("/login_page", methods=['GET'])
@@ -39,11 +29,6 @@ def login_page():
 @app.route("/homepage", methods=["GET"])
 def home():
     return render_template("Home_page.html")
-
-
-# @app.route("/home", methods=['GET'])
-# def homepage():
-#     return render_template("Home_page.html")
 
 
 if __name__ == '__main__':
