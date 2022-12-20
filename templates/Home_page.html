@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Booking</title>
+{% endblock %}
+
+{% block body %}
+<section class="position-sticky sticky-top" style="overflow:clip ">
+    <nav class="navbar navbar-light bg-dark bg-light primary-nav" id="primary-nav">
+        <div class="container-fluid">
+            <a class="navbar-brand title" href="#">Text</a>
+        </div>
+    </nav>
+</section>
+<div id="playpen" class="py-5 rounded-bottom">
+    <section class="container justify-content-center d-flex">
+        <form class="border border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form">
+            <fieldset>
+                <legend>Disabled fieldset example</legend>
+                <div class="mb-3">
+                    <label for="disabledTextInput" class="form-label"> input</label>
+                    <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+                </div>
+                <div class="d-flex my-3">
+                    <div class="d-inline">
+                        <label for="calender" style="display :block" class="form-label">Date</label>
+                        <input class="calender" type="date" id="calender" name="trip-start"
+                               value="2018-07-22"
+                               min="2018-01-01" max="2018-12-31">
+                    </div>
+                    <div class="d-inline mx-3">
+                        <label for="calender" style="display :block" class="form-label">Date</label>
+                        <input class="calender" type="date" name="trip-start"
+                               value="2018-07-22"
+                               min="2018-01-01" max="2018-12-31">
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="mb-3 d-inline">
+                        <label for="disabledSelect" class="form-label">select menu</label>
+                        <select id="disabledSelect" class="form-select">
+                            <option class="py-3">select</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 mx-3 d-inline">
+                        <label for="disabledSelect" class="form-label">select menu</label>
+                        <select class="form-select">
+                            <option class="py-3">select</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn submission dropbtn rounded-2 btn-outline-light btn1 effect01">Search
+                </button>
+            </fieldset>
+        </form>
+    </section>
+</div>
+<template id="search-result-template">
+    <div class="form-children my-4 ">
+        <div class="container justify-content-center bg-dark d-flex rounded mb-2 py-1">
+            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
+                <label>Room Type</label>
+            </div>
+            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
+                <label>Room Number</label>
+            </div>
+            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
+                <label>Price</label>
+            </div>
+            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
+                <label>Number of Beds</label>
+            </div>
+            <div class="mx-2">
+                <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Book Now
+                </button>
+            </div>
+            <div class="mx-2">
+                <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+<div id = "search-results"></div>
+
+<div class="bg-dark footerr">
+    <footer>
+        <div class="container mt-5">
+            <footer class=" my-4 mb-0 ">
+                <ul class="nav justify-content-center border-bottom pb-3 mb-3 ">
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+                </ul>
+                <p class="text-center text-muted">© 2021 Company, Inc</p>
+            </footer>
+        </div>
+    </footer>
+</div>
+<script src="{{url_for("static", filename="js/SignUp.js")}}"></script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>Welcome</title>
+{% endblock %}
+{% block body %}
+    <div class="screen-welcome">
+        <div>
+            <p class="display-1 huge-title">Welcome.</p>
+            <div class="btn-group px-5" role="group" aria-label="Basic example">
+                <button type="button"
+                        class="btn btn-secondary dropbtn btn-outline-light btn1 effect01 px-5 rounded-5 button-left signup_welcome"
+                        id="signup_welcome">Signup
+                </button>
+                <button type="button" class="btn btn-secondary dropbtn btn-outline-light btn1 effect01 px-5"
+                        id="login_welcome">Login
+                </button>
+                <button type="button"
+                        class="btn btn-secondary dropbtn btn-outline-light btn1 effect01 px-5 rounded-5 button-right booknow_welcome"
+                        id="booknow_welcome">BookNow!
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
