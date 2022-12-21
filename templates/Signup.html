@@ -3,63 +3,41 @@
     <title>My Title</title>
 {% endblock %}
 {% block body %}
-<body>
-<section class="position-sticky sticky-top" style="overflow:clip ">
-    <nav class="navbar navbar-light bg-dark bg-light primary-nav" id="primary-nav">
-        <div class="container-fluid">
-            <a class="navbar-brand title" href="#">Text</a>
-        </div>
-    </nav>
-</section>
-<div>
-    <form class="m-5 mt mx-auto" style="width: 45%;">
-        <div class="First_name">
-            <label for="firstname" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="firstname">
-        </div>
-        <div class="d-flex">
-            <div class="d-inline">
-                <label for="lastname" class="form-label" style="display :block">Last Name</label>
-                <input type="text" class="form-control" id="lastname">
+    <div>
+        <form class="m-5 mt mx-auto" style="width: 45%;">
+            <div class="First_name">
+                <label for="firstname" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstname">
             </div>
-            <div class="d-inline mx-2">
-                <label for="Date-of-Birth" style="display :block" class="form-label">Date of Birth</label>
-                <input class="calender mt-1" type="date" id="Date-of-Birth" name="trip-start"
-                       value="2018-07-22"
-                       min="2018-01-01" max="2018-12-31">
+            <div class="d-flex">
+                <div class="d-inline">
+                    <label for="lastname" class="form-label" style="display :block">Last Name</label>
+                    <input type="text" class="form-control" id="lastname">
+                </div>
+                <div class="d-inline mx-2">
+                    <label for="Date-of-Birth" style="display :block" class="form-label">Date of Birth</label>
+                    <input class="calender mt-1" type="date" id="Date-of-Birth" name="trip-start"
+                           value="2018-07-22"
+                           min="2018-01-01" max="2018-12-31">
+                </div>
             </div>
-        </div>
-        <div>
-            <label for="Email1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="Email1" aria-describedby="emailHelp">
-        </div>
-        <div>
-            <label for="Password1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="Password1">
-        </div>
-        <div class="mb-3">
-            <label for="Password2" class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" id="Password2">
-        </div>
-        <button type="button" class="rounded-2 dropbtn btn-outline-light btn1 effect01" id="submit_signup" onclick="signup()">Submit
-        </button>
-    </form>
-</div>
-<div class=bg-dark>
-    <footer>
-        <div class="container">
-            <footer class="py-3 my-4 mb-0 ">
-                <ul class="nav justify-content-center border-bottom pb-3 mb-3 ">
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
-                </ul>
-                <p class="text-center text-muted">© 2021 Company, Inc</p>
-            </footer>
-        </div>
-    </footer>
-</div>
-</body>
+            <div>
+                <label for="Email1" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="Email1" aria-describedby="emailHelp">
+            </div>
+            <div>
+                <label for="Password1" class="form-label">Password</label>
+                <input type="password" class="form-control" id="Password1">
+            </div>
+            <div class="mb-3">
+                <label for="Password2" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="Password2">
+            </div>
+            <button type="button" class="rounded-2 dropbtn btn-outline-light btn1 effect01" id="submit_signup">Submit
+            </button>
+            <div class="mb-5">
+                <label>Already Signed Up? <a href="/login_page">Login here</a></label>
+            </div>
+        </form>
+    </div>
 {% endblock %}

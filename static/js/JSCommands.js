@@ -38,40 +38,19 @@ function scrollFunction() {
     }
 }
 
-function myFunction1() {
-    document.getElementById("mybtn1").classList.toggle("show");
-}
-
-function myFunction2() {
-    document.getElementById("mybtn2").classList.toggle("show");
-}
-
-function myFunction3() {
-    document.getElementById("mybtn3").classList.toggle("show");
-}
-
-function myFunction4() {
-    document.getElementById("mybtn4").classList.toggle("show");
-}
-
-function myFunction5() {
-    document.getElementById("mybtn5").classList.toggle("show");
-}
-
-window.onclick = function (event) {
-    if (!event.target.matches('.dropbtn')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        var i;
-        for (i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
-            }
+$(document).ready(() => {
+    $("#exampleCheck1").click(() => {
+        let password = $("#InputPassword");
+        if (password.attr("type") === "password") {
+            password.attr("type", "text");
+        } else {
+            password.attr("type", "password");
         }
-    }
-}
+    });
+});
 
-$(function () {
+
+$(() => {
 
     var originalBGplaypen = $("#playpen").css("background-color"),
         x, y, xy, bgWebKit, bgMoz,
@@ -79,7 +58,7 @@ $(function () {
         gradientSize = 130;
 
     // Basic Demo
-    $('#playpen').mousemove(function (e) {
+    $('#playpen').mousemove((e) => {
 
         x = e.pageX - this.offsetLeft;
         y = e.pageY - this.offsetTop;
@@ -97,23 +76,8 @@ $(function () {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('login_welcome').addEventListener('click', function () {
-        fetch('/login_page')
-            .then(response => {
-                if (response.status === 200) {
-                    window.location = response.url;
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    });
-});
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('signup_welcome').addEventListener('click', function () {
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('signup_welcome').addEventListener('click', () => {
         fetch('/signup_page')
             .then(response => {
                 if (response.status === 200) {
@@ -127,9 +91,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('booknow_welcome').addEventListener('click', function () {
-        fetch('/homepage')
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('login_welcome').addEventListener('click', () => {
+        fetch('/login_page')
             .then(response => {
                 if (response.status === 200) {
                     window.location = response.url;
@@ -142,3 +106,64 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('booknow_welcome').addEventListener('click', () => {
+        fetch('/homepage')
+            .then(response => {
+                if (response.status === 200) {
+                    window.location = response.url;
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+});
+
+function signup() {
+    let FirstName = document.getElementById("firstname")
+    let LastName = document.getElementById("lastname")
+    let DOB = document.getElementById("Date-of-Birth")
+    let Email = document.getElementById("Email1")
+    let Password = document.getElementById("Password1")
+    let ConfirmPassword = document.getElementById("Password2")
+    if (FirstName.value === "" || LastName.value === "" || DOB.value === "" || Email.value === "" || Password.value === "" || ConfirmPassword.value === "") {
+        alert("Please fill all the fields")
+    } else if (Password.value !== ConfirmPassword.value) {
+        alert("Passwords don't match")
+    } else if (Password.value.length < 8) {
+        alert("Password must be atleast 8 characters long")
+    } else {
+        fetch("/signup_page", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "firstname": FirstName.value,
+                "lastname": LastName.value,
+                "DOB": DOB.value,
+                "Email": Email.value,
+                "Password": Password.value
+            })
+        }).then(response => {
+            if (response.status === 200) {
+                alert("Account created successfully")
+                window.location = response.url;
+            }
+            return response.json();
+
+        }).then(data => {
+            if (data.message === "success") {
+                alert("Account created successfully")
+                sessionStorage.setItem(data.key, data.message);
+            } else {
+                alert("Email already exists")
+            }
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('submit_signup').addEventListener('click', signup)
+});

@@ -184,8 +184,8 @@ section {
 }
 
 .screen-welcome {
-    height: 100%;
-    width: 100%;
+    /*height: 100%;*/
+    /*width: 100%;*/
     background: #0f000f;
     background-image: radial-gradient(circle at top left, #06357a 0%, #0f000f 60%, transparent),
     radial-gradient(circle at bottom right, #34113F 0%, #0f000f 70%, transparent);
