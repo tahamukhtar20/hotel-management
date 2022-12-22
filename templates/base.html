@@ -11,7 +11,15 @@
     <section class="position-sticky sticky-top" style="overflow:clip ">
         <nav class="navbar navbar-light bg-dark bg-light primary-nav" id="primary-nav">
             <div class="container-fluid">
-                <a class="navbar-brand title" href="#">Text</a>
+                <form class="container-fluid m-1">
+                    <a class="btn btn-sm btn-outline-secondary trigger2 mx-1" href="/"
+                       type="button">Home</a>
+                    <a class="btn btn-sm btn-outline-secondary trigger2" href="/signup_page" type="button">Sign
+                        Up</a>
+                    {% if logout_button %}
+                        <a class="btn btn-sm btn-outline-secondary trigger3 mx-1" id="logout_id">Logout</a>
+                    {% endif %}
+                </form>
             </div>
         </nav>
     </section>

@@ -2,78 +2,84 @@
 {% block head %}
     <title>Booking</title>
 {% endblock %}
-
 {% block body %}
-<div id="playpen" class="py-5 rounded-bottom">
-    <section class="container justify-content-center d-flex">
-        <form class="border border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form">
-            <fieldset>
-                <legend>Disabled fieldset example</legend>
-                <div class="mb-3">
-                    <label for="disabledTextInput" class="form-label"> input</label>
-                    <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
-                </div>
-                <div class="d-flex my-3">
-                    <div class="d-inline">
-                        <label for="calender" style="display :block" class="form-label">Date</label>
-                        <input class="calender" type="date" id="calender" name="trip-start"
-                               value="2018-07-22"
-                               min="2018-01-01" max="2018-12-31">
-                    </div>
-                    <div class="d-inline mx-3">
-                        <label for="calender" style="display :block" class="form-label">Date</label>
-                        <input class="calender" type="date" name="trip-start"
-                               value="2018-07-22"
-                               min="2018-01-01" max="2018-12-31">
-                    </div>
-                </div>
-                <div class="d-flex">
-                    <div class="mb-3 d-inline">
-                        <label for="disabledSelect" class="form-label">select menu</label>
-                        <select id="disabledSelect" class="form-select">
-                            <option class="py-3">select</option>
-                        </select>
-                    </div>
-                    <div class="mb-3 mx-3 d-inline">
-                        <label for="disabledSelect" class="form-label">select menu</label>
-                        <select class="form-select">
-                            <option class="py-3">select</option>
-                        </select>
-                    </div>
-                </div>
+    <div id="playpen" class="py-5 rounded-bottom">
+        <section class="container justify-content-center d-flex">
+            <form class="border border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form">
+                <fieldset>
+                    <legend>Book Here</legend>
+                    <div>
+                        <div class="d-flex justify-content-center mb-2">
+                            <div class="d-inline">
+                                <label for="calender" style="display :block" class="form-label">Date</label>
+                                <input class="calender" type="date" id="calender" name="trip-start"
+                                       value="{{ min_date_str }}"
+                                       min="{{ min_date_str }}" max="{{ max_date_str }}" onchange="updateCalendar()">
+                            </div>
+                            <div class="d-inline mx-3">
+                                <label for="calender2" style="display :block" class="form-label">Date</label>
+                                <input class="calender" type="date" id="calender2" name="trip-start"
+                                       value="{{ min_date_str }}"
+                                       min="{{ min_date_str }}" max="{{ max_date_str }}">
+                            </div>
+                        </div>
+                        <div class=" d-flex mx-5 mb-3">
+                            <div class="mb-2 d-inline">
+                                <label for="room_type" class="form-label">Room Type</label>
+                                <select id="room_type" class="form-select">
+                                    <option class="py-3">VIP</option>
+                                    <option class="py-3">Luxury</option>
+                                    <option class="py-3">Economy</option>
+                                </select>
+                            </div>
+                            <div class="mb-2 mx-3 d-inline">
+                                <label for="bed_count" class="form-label">Bed Count</label>
+                                <select id="bed_count" class="form-select">
+                                    <option class="py-3">2</option>
+                                    <option class="py-3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mx-3 d-inline">
+                            <label> </label>
+                            <button type="submit"
+                                    class="btn submission px-3 dropbtn rounded-pill btn-outline-light btn1 effect01"
+                                    id="buttonsubmit">
+                                Search
+                            </button>
+                        </div>
 
-                <button type="submit" class="btn submission dropbtn rounded-2 btn-outline-light btn1 effect01">Search
-                </button>
-            </fieldset>
-        </form>
-    </section>
-</div>
-<template id="search-result-template">
-    <div class="form-children my-4 ">
-        <div class="container justify-content-center bg-dark d-flex rounded mb-2 py-1">
-            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
-                <label>Room Type</label>
-            </div>
-            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
-                <label>Room Number</label>
-            </div>
-            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
-                <label>Price</label>
-            </div>
-            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
-                <label>Number of Beds</label>
-            </div>
-            <div class="mx-2">
-                <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Book Now
-                </button>
-            </div>
-            <div class="mx-2">
-                <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Add to Cart
-                </button>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
+    </div>
+    <template id="search-result-template">
+        <div class="form-children my-4 ">
+            <div class="container justify-content-center bg-dark d-flex rounded mb-2 py-1">
+                <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
+                    <label>Room Type</label>
+                </div>
+                <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
+                    <label>Room Number</label>
+                </div>
+                <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
+                    <label>Price</label>
+                </div>
+                <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
+                    <label>Number of Beds</label>
+                </div>
+                <div class="mx-2">
+                    <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Book Now
+                    </button>
+                </div>
+                <div class="mx-2">
+                    <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Add to Cart
+                    </button>
+                </div>
             </div>
         </div>
+    </template>
+    <div id="search-results">
     </div>
-</template>
-<div id = "search-results"></div>
-<script src="{{url_for("static", filename="js/SignUp.js")}}"></script>
 {% endblock %}
