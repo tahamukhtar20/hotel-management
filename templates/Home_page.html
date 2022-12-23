@@ -3,83 +3,128 @@
     <title>Booking</title>
 {% endblock %}
 {% block body %}
-    <div id="playpen" class="py-5 rounded-bottom">
-        <section class="container justify-content-center d-flex">
-            <form class="border border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form">
-                <fieldset>
-                    <legend>Book Here</legend>
-                    <div>
-                        <div class="d-flex justify-content-center mb-2">
-                            <div class="d-inline">
-                                <label for="calender" style="display :block" class="form-label">Date</label>
-                                <input class="calender" type="date" id="calender" name="trip-start"
-                                       value="{{ min_date_str }}"
-                                       min="{{ min_date_str }}" max="{{ max_date_str }}" onchange="updateCalendar()">
-                            </div>
-                            <div class="d-inline mx-3">
-                                <label for="calender2" style="display :block" class="form-label">Date</label>
-                                <input class="calender" type="date" id="calender2" name="trip-start"
-                                       value="{{ min_date_str }}"
-                                       min="{{ min_date_str }}" max="{{ max_date_str }}">
-                            </div>
-                        </div>
-                        <div class=" d-flex mx-5 mb-3">
-                            <div class="mb-2 d-inline">
-                                <label for="room_type" class="form-label">Room Type</label>
-                                <select id="room_type" class="form-select">
-                                    <option class="py-3">VIP</option>
-                                    <option class="py-3">Luxury</option>
-                                    <option class="py-3">Economy</option>
-                                </select>
-                            </div>
-                            <div class="mb-2 mx-3 d-inline">
-                                <label for="bed_count" class="form-label">Bed Count</label>
-                                <select id="bed_count" class="form-select">
-                                    <option class="py-3">2</option>
-                                    <option class="py-3">3</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="mx-3 d-inline">
-                            <label> </label>
-                            <button type="submit"
-                                    class="btn submission px-3 dropbtn rounded-pill btn-outline-light btn1 effect01"
-                                    id="buttonsubmit">
-                                Search
-                            </button>
-                        </div>
-
-                    </div>
-                </fieldset>
-            </form>
-        </section>
-    </div>
-    <template id="search-result-template">
-        <div class="form-children my-4 ">
-            <div class="container justify-content-center bg-dark d-flex rounded mb-2 py-1">
-                <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
-                    <label>Room Type</label>
-                </div>
-                <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
-                    <label>Room Number</label>
-                </div>
-                <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
-                    <label>Price</label>
-                </div>
-                <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">
-                    <label>Number of Beds</label>
-                </div>
-                <div class="mx-2">
-                    <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Book Now
-                    </button>
-                </div>
-                <div class="mx-2">
-                    <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Add to Cart
-                    </button>
-                </div>
+    <div class="d-flex">
+        <div class="px-5 py-3 rounded-4" style="background: #f1f3f3;">
+            <div class="mx-3 my-2">
+                <label for="calender" style="display :block" class="form-label">Date</label>
+                <input class="calender" type="date" id="calender"
+                       value="{{ min_date_str }}"
+                       min="{{ min_date_str }}" max="{{ max_date_str }}" onchange="updateCalendar()">
+            </div>
+            <div class="mx-3 my-2">
+                <label for="calender2" style="display :block" class="form-label">Date</label>
+                <input class="calender" type="date" id="calender2"
+                       value="{{ min_date_str }}"
+                       min="{{ min_date_str }}" max="{{ max_date_str }}">
+            </div>
+            <div class="mx-3 my-2">
+                <label for="room_type" class="form-label">Room Type</label>
+                <select id="room_type" class="form-select">
+                    <option class="py-3">VIP</option>
+                    <option class="py-3">Luxury</option>
+                    <option class="py-3">Economic</option>
+                </select>
+            </div>
+            <div class="mx-3 my-2">
+                <label for="bed_count" class="form-label">Bed Count</label>
+                <select id="bed_count" class="form-select">
+                    <option class="py-3">2</option>
+                    <option class="py-3">3</option>
+                </select>
+            </div>
+            <div>
+                <button class="btn btn-primary mx-3 my-2" id = "searching">Search</button>
             </div>
         </div>
-    </template>
-    <div id="search-results">
+
+
+        <div class="d-inline mx-5 my-5">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Room</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Bed Count</th>
+                    <th scope="col">Pricing</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
+
+{#    <div id="playpen" class="py-5 rounded-bottom">#}
+{#        <section class="container justify-content-center d-flex">#}
+{#            <form class="border border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form">#}
+{#                <fieldset>#}
+{#                    <legend>Book Here</legend>#}
+{#                    <div class="mx-3 d-inline">#}
+{#                        <label> </label>#}
+{#                        <button#}
+{#                                class="btn submission px-3 dropbtn rounded-pill btn-outline-light btn1 effect01"#}
+{#                                id="buttonsubmit">#}
+{#                            Search#}
+{#                        </button>#}
+{#                    </div>#}
+{#                </fieldset>#}
+{#            </form>#}
+{#        </section>#}
+{#    </div>#}
+{#    <table class="table">#}
+{#        <thead>#}
+{#        <tr>#}
+{#            <th scope="col">#</th>#}
+{#            <th scope="col">Vendor</th>#}
+{#            <th scope="col">Amount</th>#}
+{#            <th scope="col">Due Date</th>#}
+{#            <th scope="col">Status</th>#}
+{#        </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#        <tr>#}
+{#            <th scope="row">1</th>#}
+{#            <td>ACME Inc.</td>#}
+{#            <td>$1000</td>#}
+{#            <td>2022-01-15</td>#}
+{#            <td>Paid</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <th scope="row">2</th>#}
+{#            <td>XYZ Corp.</td>#}
+{#            <td>$2000</td>#}
+{#            <td>2022-01#}
+{#                -01#}
+{#            </td>#}
+{#            <td>Unpaid</td>#}
+{#        </tr>#}
+{#        </tbody>#}
+{#    </table>#}
+{#    <div id="search-results">#}
+{#    <div class="form-children my-4 ">#}
+{#        <div class="container justify-content-center bg-dark d-flex rounded mb-2 py-1">#}
+{#            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">#}
+{#                <p>Room Type</p>#}
+{#            </div>#}
+{#            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">#}
+{#                <p>Room Number</p>#}
+{#            </div>#}
+{#            <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">#}
+{#                <p>Price</p>#}
+{#                <div class="border mx-2 border-dark border-opacity-25 border-1 rounded-3 p-3 bg-light good_form mx-auto">#}
+{#                    <p>Number of Beds</p>#}
+{#                </div>#}
+{#                <div class="mx-2">#}
+{#                    <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Book Now#}
+{#                    </button>#}
+{#                </div>#}
+{#                <div class="mx-2">#}
+{#                    <button class="dropbtn rounded-end btn-outline-light btn1 effect01 my-1">Add to Cart#}
+{#                    </button>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#    <div id="insertion-template" class="mb-5"></div>#}

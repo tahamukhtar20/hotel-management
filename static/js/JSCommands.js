@@ -1,43 +1,3 @@
-function sessionValid() {
-    let sessionId = sessionStorage.getItem("sessionId");
-    if (!sessionId) {
-        // If the session ID is not present, the session is not valid
-        return false;
-    }
-
-    // Check if the session has expired
-    let lastRequestTime = sessionStorage.getItem("lastRequestTime");
-    let currentTime = new Date().getTime();
-    if (currentTime - lastRequestTime > SESSION_EXPIRATION_THRESHOLD) {
-        // If the session has expired, clear the session data and return false
-        sessionStorage.clear();
-        return false;
-    }
-
-    // Update the last request time
-    sessionStorage.setItem("lastRequestTime", currentTime);
-
-    // If the session ID is present and the session has not expired, the session is valid
-    return true;
-}
-
-window.onscroll = function () {
-    scrollFunction()
-};
-// if (!sessionValid()) {
-//     window.location.href = "login.html";
-// }
-
-function scrollFunction() {
-    if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
-        document.getElementById("navbar").style.padding = "30px 10px";
-        document.getElementById("logo").style.fontSize = "25px";
-    } else {
-        document.getElementById("navbar").style.padding = "80px 10px";
-        document.getElementById("logo").style.fontSize = "35px";
-    }
-}
-
 $(document).ready(() => {
     $("#exampleCheck1").click(() => {
         let password = $("#InputPassword");
@@ -48,30 +8,6 @@ $(document).ready(() => {
         }
     });
 });
-
-
-// let originalBGplaypen = $("#playpen").css("background-color"),
-//     x, y, xy, bgWebKit, bgMoz,
-//     lightColor = "#483F78",
-//     gradientSize = 130;
-//
-// // Basic Demo
-// $('#playpen').mousemove((e) => {
-//
-//     x = e.pageX - this.offsetLeft;
-//     y = e.pageY - this.offsetTop;
-//     xy = x + " " + y;
-//
-//     bgWebKit = "-webkit-gradient(radial, " + xy + ", 0, " + xy + ", " + gradientSize + ", from(" + lightColor + "), to(rgba(130,3,98,0.0))), " + originalBGplaypen;
-//     bgMoz = "-moz-radial-gradient(" + x + "px " + y + "px 45deg, circle, " + lightColor + " 0%, " + originalBGplaypen + " " + gradientSize + "px)";
-//
-//     $(this)
-//         .css({background: bgWebKit})
-//         .css({background: bgMoz});
-//
-// }).mouseleave(function () {
-//     $(this).css({background: originalBGplaypen});
-// });
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -225,31 +161,72 @@ function updateCalendar() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('buttonsubmit').addEventListener('click', search)
+    document.getElementById('buttonsubmit').addEventListener('click', searching)
 });
 
-function search() {
-    let start_date = document.getElementById("calender")
-    let end_date = document.getElementById("calender2")
-    let bed_count = document.getElementById("bed_count")
-    let room_type = document.getElementById("room_type")
-    fetch("/searching", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("searching").addEventListener('click', searching)
+});
+
+function searching() {
+    let selectedDate = document.getElementById('calender').value;
+    let selectedDate2 = document.getElementById('calender2').value;
+    let selectedRoomType = document.getElementById('room_type').value;
+    let selectedBeds = document.getElementById('bed_count').value;
+    $.ajax({
+        url: '/get-data',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            "checkin": selectedDate,
+            "checkout": selectedDate2,
+            "room_type": selectedRoomType,
+            "bed_count": selectedBeds
         },
-        body: JSON.stringify({
-            "start_date": start_date.value,
-            "end_date": end_date.value,
-            "bed_count": bed_count.value,
-            "room_type": room_type.value
-        })
-    }).then(response => {
-        if (response.status === 200) {
-            window.location = response.url;
+        success: function (data) {
+            $('table tbody').empty()
+            for (let i = 0; i < data.length; i++) {
+                let item = data[i];
+                let row = '<tr>' +
+                    '<th scope="row">' + (i + 1) + '</th>' +
+                    '<td>' + item.Room + '</td>' +
+                    '<td>' + item.Type + '</td>' +
+                    '<td>' + item.Number_of_Beds + '</td>' +
+                    '<td>' + item.Price + '</td>' +
+                    '<td><button id="add-to-cart-button" data-item-index="' + i + '">Add to Cart</button></td>' +
+                    '</tr>';
+                $('table tbody').append(row);
+            }
+
+            // Add click event listener to "Add to Cart" buttons
+            $('#add-to-cart-button').click(function () {
+                let itemIndex = $(this).data('item-index');
+                let item = data[itemIndex];
+
+                // Send request to server-side route to add item to cart
+                $.ajax({
+                    url: '/add-to-cart',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        "item": item
+                    },
+                    success: function (response) {
+                        // Item was added to cart successfully
+                    },
+                    error: function (error) {
+                        // An error occurred while adding the item to the cart
+                    }
+                });
+            });
         }
-        return response.json();
     });
 }
+
+// let cart = JSON.parse(localStorage.getItem('cart'));
+
+
+
 
 

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from flask import Flask, render_template, redirect, url_for, request, session
+from flask import Flask, render_template, redirect, url_for, request, session, jsonify
 from flask_session import Session
 import mysql.connector
 
@@ -23,6 +23,11 @@ Session(app)
 app.secret_key = "***REMOVED***"
 
 
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
+
+
 def validate_login(username, password):
     cursor = conn.cursor()
     cursor.execute(
@@ -33,9 +38,6 @@ def validate_login(username, password):
         return True
     cursor.close()
     return False
-
-
-# Use Flask template syntax to render the dates in the HTML
 
 
 @app.route("/")
@@ -49,7 +51,7 @@ def index():
 def homepage():
     if 'username' in session:
         return render_template('Home_page.html', logout_button=True, min_date_str=min_date_str,
-                               max_date_str=max_date_str)
+                               max_date_str=max_date_str, fixed_bar=True)
     else:
         return redirect(url_for('login_page'))
 
@@ -65,6 +67,11 @@ def login():
         return redirect(url_for('homepage'))
     else:
         return redirect(url_for('login_page'))
+
+
+@app.route("/manager")
+def manager():
+    return render_template("manager.html", delete_bars=True)
 
 
 # Signup
@@ -86,7 +93,6 @@ def login_page():
         if validate_login(username, password):
             session['username'] = username
             return redirect(url_for('homepage'))
-        # else:
     elif request.method == "GET":
         return render_template('login_page.html')
 
@@ -112,8 +118,18 @@ def signup_page():
         return render_template("Signup.html")
 
 
-@app.route("/searching", methods=["POST"])
-def searching()
+@app.route("/searching", methods=["POST", "GET"])
+def searching():
+    data = request.get_json()
+    print(data)
+    start_date = data.get("start_date")
+    end_date = data.get("end_date")
+    bed_count = data.get("bed_count")
+    room_type = data.get("room_type")
+    available_rooms = ["R101"]
+    return jsonify({"rooms": available_rooms})
+
+
 #######################################################################################################################
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
@@ -137,6 +153,31 @@ def front_desk():
 def logout():
     session.pop('username', None)
     return redirect(url_for('login_page'))
+
+
+@app.route("/get-data", methods=["POST"])
+def get_data():
+    checkin = request.form['checkin']
+    checkout = request.form['checkout']
+    room_type = request.form['room_type']
+    bed_count = request.form['bed_count']
+
+    cur = conn.cursor()
+    cur.execute(
+        f"SELECT * FROM room WHERE Room_type='{room_type}' AND no_of_beds='{bed_count}' AND Room_no NOT IN (SELECT room_Room_no FROM booked_room WHERE '{checkin}' BETWEEN Check_in AND Check_out OR '{checkout}' BETWEEN Check_in AND Check_out)"
+    )
+    rows = cur.fetchall()
+    cur.close()
+
+    data = []
+    for row in rows:
+        data.append({
+            "Room": row[0],
+            "Type": row[1],
+            "Number_of_Beds": row[2],
+            "Price": row[3]
+        })
+    return jsonify(data)
 
 
 #######################################################################################################################
