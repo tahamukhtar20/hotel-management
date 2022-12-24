@@ -70,11 +70,9 @@ function signup() {
         alert("Password must be atleast 6 characters long")
     } else {
         fetch("/signup_page", {
-            method: "POST",
-            headers: {
+            method: "POST", headers: {
                 "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
+            }, body: JSON.stringify({
                 "name": FirstName.value + " " + LastName.value,
                 "dob": DOB.value,
                 "email": Email.value,
@@ -108,13 +106,10 @@ function login() {
         alert("Password must be atleast 6 characters long")
     } else {
         fetch("/login_page", {
-            method: "POST",
-            headers: {
+            method: "POST", headers: {
                 "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                "username": Email.value,
-                "password": Password.value
+            }, body: JSON.stringify({
+                "username": Email.value, "password": Password.value
             })
         }).then(response => {
             if (response.status === 200) {
@@ -129,8 +124,7 @@ function login() {
 
 function logout() {
     fetch("/logout", {
-        method: "POST",
-        headers: {
+        method: "POST", headers: {
             "Content-Type": "application/json"
         }
     }).then(response => {
@@ -174,50 +168,31 @@ function searching() {
     let selectedRoomType = document.getElementById('room_type').value;
     let selectedBeds = document.getElementById('bed_count').value;
     $.ajax({
-        url: '/get-data',
-        type: 'POST',
-        dataType: 'json',
-        data: {
-            "checkin": selectedDate,
-            "checkout": selectedDate2,
-            "room_type": selectedRoomType,
-            "bed_count": selectedBeds
-        },
-        success: function (data) {
-            $('table tbody').empty()
-            for (let i = 0; i < data.length; i++) {
-                let item = data[i];
-                let row = '<tr>' +
-                    '<th scope="row">' + (i + 1) + '</th>' +
-                    '<td>' + item.Room + '</td>' +
-                    '<td>' + item.Type + '</td>' +
-                    '<td>' + item.Number_of_Beds + '</td>' +
-                    '<td>' + item.Price + '</td>' +
-                    '<button class ="btn btn-primary" id="add-to-cart-button" data-item-index="' + i + '" disabled>Add to Cart</button>'
-                '</tr>';
-                $('table tbody').append(row);
-            }
+        url: '/get-data', type: 'POST', dataType: 'json', data: {
+            checkin: selectedDate, checkout: selectedDate2, room_type: selectedRoomType, bed_count: selectedBeds
+        }, success: function (data) {
+            let tableData = data.map((item, i) => ({
+                Room: item.Room, Type: item.Type, Number_of_Beds: item.Number_of_Beds, Price: item.Price, index: i
+            }));
+            let rows = tableData.map(item => `
+        <tr>
+          <th scope="row">${item.index + 1}</th>
+          <td>${item.Room}</td>
+          <td>${item.Type}</td>
+          <td>${item.Number_of_Beds}</td>
+          <td>${item.Price}</td>
+          <td>
+            <button class="btn btn-primary add-to-cart-button" data-item-index="${item.index}">Add to Cart</button>
+          </td>
+        </tr>
+      `);
+            let html = rows.join('');
+            $('table tbody').html(html);
 
-            // Add click event listener to "Add to Cart" buttons
-            $('#add-to-cart-button').click(function () {
-                let itemIndex = $(this).data('item-index');
-                let item = data[itemIndex];
-
-                // Send request to server-side route to add item to cart
-                $.ajax({
-                    url: '/add-to-cart',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        "item": item
-                    },
-                    success: function (response) {
-                        // Item was added to cart successfully
-                    },
-                    error: function (error) {
-                        // An error occurred while adding the item to the cart
-                    }
-                });
+            $(document).on('click', '.add-to-cart-button', function () {
+                let index = $(this).data('item-index');
+                let item = tableData[index];
+                addToCart(item);
             });
         }
     });
@@ -225,9 +200,7 @@ function searching() {
 
 
 $.ajax({
-    url: '/manager',
-    type: 'POST',
-    success: function (response1) {
+    url: '/manager', type: 'POST', success: function (response1) {
         let tbody = $('#bookings tbody');
         response = response1[0]
         tbody.empty();  // clear the existing rows

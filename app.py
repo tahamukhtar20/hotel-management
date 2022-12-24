@@ -296,6 +296,24 @@ def get_bookings():
     return jsonify(data1)
 
 
+@app.route('/admin_verification', methods=['POST'])
+def admin_verification():
+    email = request.json['username']
+    password = request.json['password']
+    cur = conn.cursor()
+    cur.execute(
+        f"select Designation from Employee where Employee_email = '{email}' and Employee_pass = '{password}';")
+    flag = cur.fetchone()
+    if flag == None:
+        return jsonify({"success": False})
+    else:
+        return jsonify(flag)
+
+
+@app.route('/manager', methods=['GET'])
+def manager_redirect():
+
+
 #######################################################################################################################
 if __name__ == "__main__":
     app.run(debug=True)
