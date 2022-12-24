@@ -153,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function updateCalendar() {
     let selectedDate = document.getElementById('calender').value;
-
     let minDate = new Date(selectedDate);
     minDate.setDate(minDate.getDate() + 1);
     document.getElementById('calender2').min = minDate.toISOString().substr(0, 10);
@@ -228,11 +227,11 @@ function searching() {
 $.ajax({
     url: '/manager',
     type: 'POST',
-    success: function (response) {
+    success: function (response1) {
         let tbody = $('#bookings tbody');
+        response = response1[0]
         tbody.empty();  // clear the existing rows
         for (let i = 0; i < response.length; i++) {
-            console.log(response)
             let booking = response[i];
             let tr = $('<tr>');
             tr.append($('<td>').text(booking.Booking_id));
@@ -242,8 +241,39 @@ $.ajax({
             tr.append($('<td>').text(booking.Check_out));
             tbody.append(tr);
         }
+        response = response1[1]
+        tbody = $('#salaries tbody')
+        tbody.empty()
+        for (let i = 0; i < response.length; i++) {
+            let booking = response[i];
+            let tr = $('<tr>');
+            tr.append($('<td>').text(booking.EmployeeNumber));
+            tr.append($('<td>').text(booking.Employee));
+            tr.append($('<td>').text(booking.Designation));
+            tr.append($('<td>').text(booking.Salary));
+            tbody.append(tr);
+        }
     }
 });
 
+function front_desk() {
+    booking_no = document.getElementById('booking-number')
+    services1 = document.getElementById('services')
+    quantity1 = document.getElementById('serviceQuantity')
+    $.ajax({
+        type: "POST",
+        url: "/front_desk",
+        data: {"booking_no": booking_no.value, "services": services1.value, "quantity": quantity1.value},
+        success: function (response) {
+            alert("Successfully added")
+        }
+    });
+
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("front_desk_service").addEventListener('click', front_desk)
+});
 
 

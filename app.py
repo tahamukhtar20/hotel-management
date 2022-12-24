@@ -156,6 +156,31 @@ def front_desk():
     return render_template("front-desk.html")
 
 
+@app.route("/front_desk", methods=["GET", "POST"])
+def front_desk_():
+    if request.method == "POST":
+        data = request.get_json()
+        quantity = data.get("quantity")
+        service_type = data.get("services")
+        Booking_id = data.get("booking_no")
+        cur = conn.cursor()
+        cur.execute(f"SELECT service_id from services where service_type = '{service_type}'")
+        service_id = cur.fetchone()[0]
+        cur.execute(
+            f"SELECT * from booked_service where booking_Booking_id = '{Booking_id}' and service_Service_id = '{service_id}'")
+        flag = cur.fetchone()
+        if flag == None:
+            cur.execute(
+                f"INSERT INTO booked_service(booking_Booking_id, service_Service_id, Quantity) value ('{Booking_id}','{service_id}','{quantity}')")
+            cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+        else:
+            cur.execute(
+                f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Boooking_id = '{Booking_id}'")
+            cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+        cur.close()
+        return jsonify({"success": True})
+
+
 @app.route("/logout", methods=["POST"])
 def logout():
     session.pop('username', None)
@@ -243,6 +268,7 @@ def get_bookings():
     cursor.execute(
         "SELECT Booking_id, Customer_name, Customer_email, Check_in, Check_out FROM booking, customer, booked_room WHERE booking_Booking_id = Booking_id AND Customer_id = booking.customer_Customer_id AND curdate() BETWEEN Check_in AND Check_out")
     bookings = cursor.fetchall()
+    data1 = []
     data = []
     for row in bookings:
         data.append({
@@ -252,8 +278,22 @@ def get_bookings():
             "Check_in": str(row[3]),
             "Check_out": str(row[4])
         })
-    print(data)
-    return jsonify(data)
+    data1.append(data)
+    data = []
+    cursor.execute(f"select Employee_id, Employee_name, Designation, Salary from employee order by Employee_id")
+    bookings = cursor.fetchall()
+    for row in bookings:
+        data.append({
+            "EmployeeNumber": row[0],
+            "Employee": row[1],
+            "Designation": row[2],
+            "Salary": row[3]
+        })
+    data1.append(data)
+    data = []
+    cursor.close()
+    print(data1)
+    return jsonify(data1)
 
 
 #######################################################################################################################
