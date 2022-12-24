@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify
 from flask_session import Session
+import json
 import mysql.connector
 
 now = datetime.now()
@@ -138,10 +139,16 @@ def admin():
     elif request.method == "POST":
         username = request.json.get("username")
         password = request.json.get("password")
-        if username == "***REMOVED***" and password == "***REMOVED***":
-            return redirect(url_for("front-desk"))
-        else:
-            return redirect(url_for("admin"))
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT Employee_email, Employee_pass FROM employee WHERE Employee_email = %s AND Employee_pass = %s",
+            (username, password))
+        # if cursor.fetchone()[]:
+        #     cursor.close()
+        #     return redirect(url_for("front-desk"))
+        cursor.close()
+        return False
+    return redirect(url_for("admin"))
 
 
 @app.route("/front-desk")
@@ -177,6 +184,75 @@ def get_data():
             "Number_of_Beds": row[2],
             "Price": row[3]
         })
+    return jsonify(data)
+
+
+@app.route('/add-to-cart', methods=['POST'])
+def add_to_cart():
+    item = request.get_json()['item']
+
+    # Load the JSON file
+    with open('cart.json', 'r') as f:
+        cart = json.load(f)
+
+    # Add the item to the cart
+    cart.append(item)
+
+    # Save the updated cart to the JSON file
+    with open('cart.json', 'w') as f:
+        json.dump(cart, f)
+
+    return jsonify({'success': True})
+
+
+@app.route("/data-retrieval", methods=["POST"])
+def retrieval_admin_data():
+    cur = conn.cursor()
+    cur.execute(
+        f"SELECT * FROM "
+    )
+    rows = cur.fetchall()
+    cur.close()
+
+
+@app.route('/service', methods=['POST'])
+def service():
+    quantity = 5
+    service_type = 'BANQUETTE'
+    Booking_id = "4"
+    cur = conn.cursor()
+    cur.execute(f"SELECT service_id from services where service_type = '{service_type}'")
+    service_id = cur.fetchone()[0]
+    cur.execute(
+        f"SELECT * from booked_service where booking_Booking_id = '{Booking_id}' and service_Service_id = '{service_id}'")
+    flag = cur.fetchone()
+    if flag == None:
+        cur.execute(
+            f"INSERT INTO booked_service(booking_Booking_id, service_Service_id, Quantity) value ('{Booking_id}','{service_id}','{quantity}')")
+        cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+    else:
+        cur.execute(
+            f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Boooking_id = '{Booking_id}'")
+        cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+    cur.close()
+
+
+@app.route('/manager', methods=['POST'])
+def get_bookings():
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT Booking_id, Customer_name, Customer_email, Check_in, Check_out FROM booking, customer, booked_room WHERE booking_Booking_id = Booking_id AND Customer_id = booking.customer_Customer_id AND curdate() BETWEEN Check_in AND Check_out")
+    bookings = cursor.fetchall()
+    data = []
+    for row in bookings:
+        data.append({
+            "Booking_id": row[0],
+            "Customer_name": row[1],
+            "Customer_email": row[2],
+            "Check_in": str(row[3]),
+            "Check_out": str(row[4])
+        })
+    print(data)
     return jsonify(data)
 
 

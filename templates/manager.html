@@ -1,222 +1,194 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
 {% block body %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/manager">Admin View</a>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#bookings">Bookings</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#salaries">Salaries</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#bills">Bills</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#profit">Profit</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#expenses">Expenses</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#restock">Restock</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<div class="container my-5">
-    <div id="bookings" class="row">
-        <div class="col-12">
-            <h2>Bookings</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Status</th>
-                </tr>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/manager">Admin View</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#bookings">Current Bookings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#salaries">Employee Salaries</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#bills">Management Bills</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#profit">Profit</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#expenses">Expenses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#restock">Restocking</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container my-5">
+        <div id="bookings" class="row">
+            <div class="col-12">
+                <h2>Current Bookings</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Check in</th>
+                        <th scope="col">Check out</th>
+                    </tr>
 
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>John Doe</td>
-                    <td>john@example.com</td>
-                    <td>123-456-7890</td>
-                    <td>2022-01-01</td>
-                    <td>Confirmed</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jane Smith</td>
-                    <td>jane@example.com</td>
-                    <td>098-765-4321</td>
-                    <td>2022-01-02</td>
-                    <td>Pending</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="salaries" class="row mt-5">
-        <div class="col-12">
-            <h2>Salaries</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Employee</th>
-                    <th scope="col">Position</th>
-                    <th scope="col">Salary</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Bob Johnson</td>
-                    <td>Manager</td>
-                    <td>$5000</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Sara Williams</td>
-                    <td>Assistant Manager</td>
-                    <td>$4000</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="bills" class="row mt-5">
-        <div class="col-12">
-            <h2>Bills</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Vendor</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Due Date</th>
-                    <th scope="col">Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>ACME Inc.</td>
-                    <td>$1000</td>
-                    <td>2022-01-15</td>
-                    <td>Paid</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>XYZ Corp.</td>
-                    <td>$2000</td>
-                    <td>2022-01
-                        -01
-                    </td>
-                    <td>Unpaid</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="profit" class="row mt-5">
-        <div class="col-12">
-            <h2>Profit</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Revenue</th>
-                    <th scope="col">Expenses</th>
-                    <th scope="col">Profit</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>2022-01-01</td>
-                    <td>$10000</td>
-                    <td>$5000</td>
-                    <td>$5000</td>
-                </tr>
-                <tr>
-                    <td>2022-01-02</td>
-                    <td>$12000</td>
-                    <td>$6000</td>
-                    <td>$6000</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="expenses" class="row mt-5">
-        <div class="col-12">
-            <h2>Expenses</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Amount</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>2022-01-01</td>
-                    <td>Utilities</td>
-                    <td>Electricity</td>
-                    <td>$100</td>
-                </tr>
-                <tr>
-                    <td>2022-01-01</td>
-                    <td>Supplies</td>
-                    <td>Paper towels</td>
-                    <td>$50</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="restock" class="row mt-5">
-        <div class="col-12">
-            <h2>Restock</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Item</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Cost</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>2022-01-01</td>
-                    <td>Soda</td>
+                    </thead>
+                    <tbody>
 
-                    <td>50</td>
-                    <td>$75</td>
-                </tr>
-                <tr>
-                    <td>2022-01-01</td>
-                    <td>Chips</td>
-                    <td>100</td>
-                    <td>$50</td>
-                </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="salaries" class="row mt-5">
+            <div class="col-12">
+                <h2>Employee Salaries</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Employee</th>
+                        <th scope="col">Position</th>
+                        <th scope="col">Salary</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="bills" class="row mt-5">
+            <div class="col-12">
+                <h2>Management Bills</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Vendor</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Due Date</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>ACME Inc.</td>
+                        <td>$1000</td>
+                        <td>2022-01-15</td>
+                        <td>Paid</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>XYZ Corp.</td>
+                        <td>$2000</td>
+                        <td>2022-01
+                            -01
+                        </td>
+                        <td>Unpaid</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="profit" class="row mt-5">
+            <div class="col-12">
+                <h2>Profit</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Revenue</th>
+                        <th scope="col">Expenses</th>
+                        <th scope="col">Profit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>2022-01-01</td>
+                        <td>$10000</td>
+                        <td>$5000</td>
+                        <td>$5000</td>
+                    </tr>
+                    <tr>
+                        <td>2022-01-02</td>
+                        <td>$12000</td>
+                        <td>$6000</td>
+                        <td>$6000</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="expenses" class="row mt-5">
+            <div class="col-12">
+                <h2>Expenses</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>2022-01-01</td>
+                        <td>Utilities</td>
+                        <td>Electricity</td>
+                        <td>$100</td>
+                    </tr>
+                    <tr>
+                        <td>2022-01-01</td>
+                        <td>Supplies</td>
+                        <td>Paper towels</td>
+                        <td>$50</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="restock" class="row mt-5">
+            <div class="col-12">
+                <h2>Restocking</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Item</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Cost</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>2022-01-01</td>
+                        <td>Soda</td>
+
+                        <td>50</td>
+                        <td>$75</td>
+                    </tr>
+                    <tr>
+                        <td>2022-01-01</td>
+                        <td>Chips</td>
+                        <td>100</td>
+                        <td>$50</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-<div class="bg-dark">
+    <div class="bg-dark">
         <footer>
             <div class="container">
                 <footer class=" my-3 ">
@@ -232,6 +204,5 @@
             </div>
         </footer>
     </div>
-
-    {% endblock %}
+{% endblock %}
 

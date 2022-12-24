@@ -194,8 +194,8 @@ function searching() {
                     '<td>' + item.Type + '</td>' +
                     '<td>' + item.Number_of_Beds + '</td>' +
                     '<td>' + item.Price + '</td>' +
-                    '<td><button id="add-to-cart-button" data-item-index="' + i + '">Add to Cart</button></td>' +
-                    '</tr>';
+                    '<button class ="btn btn-primary" id="add-to-cart-button" data-item-index="' + i + '" disabled>Add to Cart</button>'
+                '</tr>';
                 $('table tbody').append(row);
             }
 
@@ -224,9 +224,26 @@ function searching() {
     });
 }
 
-// let cart = JSON.parse(localStorage.getItem('cart'));
 
-
+$.ajax({
+    url: '/manager',
+    type: 'POST',
+    success: function (response) {
+        let tbody = $('#bookings tbody');
+        tbody.empty();  // clear the existing rows
+        for (let i = 0; i < response.length; i++) {
+            console.log(response)
+            let booking = response[i];
+            let tr = $('<tr>');
+            tr.append($('<td>').text(booking.Booking_id));
+            tr.append($('<td>').text(booking.Customer_name));
+            tr.append($('<td>').text(booking.Customer_email));
+            tr.append($('<td>').text(booking.Check_in));
+            tr.append($('<td>').text(booking.Check_out));
+            tbody.append(tr);
+        }
+    }
+});
 
 
 
