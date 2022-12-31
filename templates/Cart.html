@@ -14,23 +14,66 @@
                 <th scope="col">Room Number</th>
                 <th scope="col">Price</th>
                 <th scope="col">Number of Beds</th>
+                <th scope="col">Check in Date</th>
+                <th scope="col">Check out Date</th>
             </tr>
             </thead>
-            <tbody>
-            {% for room in rooms %}
-                <tr>
-                    <td>{{ room.type }}</td>
-                    <td>{{ room.number }}</td>
-                    <td>{{ room.price }}</td>
-                    <td>{{ room.bed_count }}</td>
-                </tr>
-            {% endfor %}
+            <tbody id="inner_table">
             </tbody>
         </table>
-        {% if booking_exists %}
-            <button type="button" class="btn btn-primary">Checkout</button>
-        {% else %}
-            <p class="justify-content-center h1">No Bookings</p>
-        {% endif %}
+        <div id="button_response">
+        </div>
+        <p class="justify-content-center h1"></p>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let cart = document.getElementById("inner_table");
+            let temp = sessionStorage.getItem("cart");
+            console.log(typeof (temp));
+            console.log(temp);
+            if (temp !== "{}") {
+                temp = JSON.parse(temp);
+                document.getElementById("button_response").innerHTML = `<button type="button" class="checkout_button btn btn-primary">Checkout</button>`;
+                console.log(temp);
+                let count = 0;
+                for (let key in temp) {
+                    count++;
+                    let item = temp[key];
+                    let row = cart.insertRow();
+                    let roomTypeCell = row.insertCell();
+                    let roomNumberCell = row.insertCell();
+                    let priceCell = row.insertCell();
+                    let numBedsCell = row.insertCell();
+                    let checkinCell = row.insertCell();
+                    let checkoutCell = row.insertCell();
+                    let removeCell = row.insertCell();
+                    roomTypeCell.innerHTML = item[0];
+                    roomNumberCell.innerHTML = item[1];
+                    numBedsCell.innerHTML = item[2];
+                    priceCell.innerHTML = item[3];
+                    checkinCell.innerHTML = item[4];
+                    checkoutCell.innerHTML = item[5];
+                    let removeButton = document.createElement('button');
+                    removeButton.innerHTML = 'Remove';
+                    removeButton.classList.add('btn', 'btn-danger');
+                    removeCell.appendChild(removeButton);
+                    removeButton.addEventListener('click', function () {
+                        delete temp[key];
+                        sessionStorage.setItem('cart', JSON.stringify(temp));
+                        cart.deleteRow(row.rowIndex - 1);
+                        count--;
+                        if (count === 0) {
+                            document.getElementById("button_response").innerHTML = `<p class = "h1">No Bookings</p>`;
+                        }
+                    });
+                }
+            } else {
+                document.getElementById("button_response").innerHTML = `<p class = "h1">No Bookings</p>`
+            }
+        });
+        let checkout = document.getElementById("checkout_button")
+        checkout.addEventListener("click", ()=>{
+            sessionStorage.getItem("")
+        })
+    </script>
 {% endblock %}

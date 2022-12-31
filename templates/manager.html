@@ -38,11 +38,19 @@
                         <th scope="col">Email</th>
                         <th scope="col">Check in</th>
                         <th scope="col">Check out</th>
-                     </tr>
+                    </tr>
 
                     </thead>
                     <tbody>
-
+                    {% for booking in bookings[0] %}
+                        <tr>
+                            <th scope="row">{{ booking["Booking_id"] }}</th>
+                            <td>{{ booking["Customer_name"] }}</td>
+                            <td>{{ booking["Customer_email"] }}</td>
+                            <td>{{ booking["Check_in"] }}</td>
+                            <td>{{ booking["Check_out"] }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -60,7 +68,14 @@
                     </tr>
                     </thead>
                     <tbody>
-
+                    {% for booking in bookings[1] %}
+                        <tr>
+                            <th scope="row">{{ booking["EmployeeNumber"] }}</th>
+                            <td>{{ booking["Employee"] }}</td>
+                            <td>{{ booking["Designation"] }}</td>
+                            <td>{{ booking["Salary"] }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -112,18 +127,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2022-01-01</td>
-                        <td>$10000</td>
-                        <td>$5000</td>
-                        <td>$5000</td>
-                    </tr>
-                    <tr>
-                        <td>2022-01-02</td>
-                        <td>$12000</td>
-                        <td>$6000</td>
-                        <td>$6000</td>
-                    </tr>
+                    {% for booking in bookings[2] %}
+                        <tr>
+                            <th scope="row">{{ booking["Date"] }}</th>
+                            <td>{{ booking["Revenue"] }}</td>
+                            <td>{{ booking["Expenses"] }}</td>
+                            <td>{{ booking["Profit"] }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -141,18 +152,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2022-01-01</td>
-                        <td>Utilities</td>
-                        <td>Electricity</td>
-                        <td>$100</td>
-                    </tr>
-                    <tr>
-                        <td>2022-01-01</td>
-                        <td>Supplies</td>
-                        <td>Paper towels</td>
-                        <td>$50</td>
-                    </tr>
+                    {% for booking in bookings[3] %}
+                        <tr>
+                            <th scope="row">{{ booking["Date"] }}</th>
+                            <td>{{ booking["Category"] }}</td>
+                            <td>{{ booking["Description"] }}</td>
+                            <td>{{ booking["Amount"] }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -170,19 +177,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2022-01-01</td>
-                        <td>Soda</td>
-
-                        <td>50</td>
-                        <td>$75</td>
-                    </tr>
-                    <tr>
-                        <td>2022-01-01</td>
-                        <td>Chips</td>
-                        <td>100</td>
-                        <td>$50</td>
-                    </tr>
+                    {% for booking in bookings[4] %}
+                        <tr>
+                            <th scope="row">{{ booking["Date"] }}</th>
+                            <td>{{ booking["Item"] }}</td>
+                            <td>{{ booking["Quantity"] }}</td>
+                            <td>{{ booking["Cost"] }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -204,5 +206,38 @@
             </div>
         </footer>
     </div>
+    <script>
+        function manager_panel() {
+            $.ajax({
+                url: '/manager', type: 'POST', success: function (response1) {
+                    let tbody = $('#bookings tbody');
+                    let response = response1[1]
+                    tbody.empty();
+                    for (let i = 0; i < response.length; i++) {
+                        let booking = response[i];
+                        let tr = $('<tr>');
+                        tr.append($('<td>').text(booking["Booking_id"]));
+                        tr.append($('<td>').text(booking["Customer_name"]));
+                        tr.append($('<td>').text(booking["Customer_email"]));
+                        tr.append($('<td>').text(booking["Check_in"]));
+                        tr.append($('<td>').text(booking["Check_out"]));
+                        tbody.append(tr);
+                    }
+                    response = response1[0]
+                    tbody = $('#salaries tbody')
+                    tbody.empty()
+                    for (let i = 0; i < response.length; i++) {
+                        let booking = response[i];
+                        let tr = $('<tr>');
+                        tr.append($('<td>').text(booking["EmployeeNumber"]));
+                        tr.append($('<td>').text(booking["Employee"]));
+                        tr.append($('<td>').text(booking["Designation"]));
+                        tr.append($('<td>').text(bookingd["Salary"]));
+                        tbody.append(tr);
+                    }
+                }
+            });
+        }
+    </script>
 {% endblock %}
 

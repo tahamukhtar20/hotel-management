@@ -1,15 +1,15 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify
 from flask_session import Session
 import json
+from liveserver import LiveServer
 import mysql.connector
 
 now = datetime.now()
 
 min_date_str = now.strftime("%Y-%m-%d")
+min_date_str_max = (now + timedelta(days=1)).strftime("%Y-%m-%d")
 max_date_str = (now + timedelta(days=5)).strftime("%Y-%m-%d")
-
-# Get current date
 
 conn = mysql.connector.connect(
     host="127.0.0.1",
@@ -19,14 +19,21 @@ conn = mysql.connector.connect(
     port="3306"
 )
 app = Flask(__name__)
+ls = LiveServer(app)
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 app.secret_key = "***REMOVED***"
 
 
-@app.route('/cart')
-def cart():
-    return render_template('cart.html')
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
+#######################################################################################################################
 
 
 def validate_login(username, password):
@@ -41,45 +48,17 @@ def validate_login(username, password):
     return False
 
 
+#######################################################################################################################
+
+#######################################################################################################################
+
+
 @app.route("/")
 def index():
     return render_template("index.html", delete_bars=True)
 
 
 #######################################################################################################################
-# Homepage
-@app.route('/homepage', methods=["GET"])
-def homepage():
-    if 'username' in session:
-        return render_template('Home_page.html', logout_button=True, min_date_str=min_date_str,
-                               max_date_str=max_date_str, fixed_bar=True)
-    else:
-        return redirect(url_for('login_page'))
-
-
-# Login
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.json['username']
-    password = request.json['password']
-    if validate_login(username, password):
-        session["username"] = username
-        print(session)
-        return redirect(url_for('homepage'))
-    else:
-        return redirect(url_for('login_page'))
-
-
-@app.route("/manager")
-def manager():
-    return render_template("manager.html", delete_bars=True)
-
-
-# Signup
-@app.route('/signup', methods=['POST'])
-def signup():
-    return redirect(url_for('login_page'))
-
 
 #######################################################################################################################
 
@@ -98,93 +77,30 @@ def login_page():
         return render_template('login_page.html')
 
 
-# Signup
-@app.route("/signup_page", methods=["GET", "POST"])
-def signup_page():
-    if "username" in session:
-        return redirect(url_for("homepage"))
-    elif request.method == "POST":
-        name = request.json.get("name")
-        dob = request.json.get("dob")
-        email = request.json.get("email")
-        password = request.json.get("password")
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO customer (Customer_name, Customer_email, Customer_password, Customer_DOB) VALUES (%s, %s, %s, %s)",
-            (name, email, password, dob))
-        conn.commit()
-        cur.close()
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.json['username']
+    password = request.json['password']
+    if validate_login(username, password):
+        session["username"] = username
+        print(session)
+        return redirect(url_for('homepage'))
+    else:
         return redirect(url_for('login_page'))
-    elif request.method == "GET":
-        return render_template("Signup.html")
-
-
-@app.route("/searching", methods=["POST", "GET"])
-def searching():
-    data = request.get_json()
-    print(data)
-    start_date = data.get("start_date")
-    end_date = data.get("end_date")
-    bed_count = data.get("bed_count")
-    room_type = data.get("room_type")
-    available_rooms = ["R101"]
-    return jsonify({"rooms": available_rooms})
 
 
 #######################################################################################################################
-@app.route("/admin", methods=["GET", "POST"])
-def admin():
-    if request.method == "GET":
-        return render_template("_admin_login.html")
-    elif request.method == "POST":
-        username = request.json.get("username")
-        password = request.json.get("password")
-        cursor = conn.cursor()
-        cursor.execute(
-            "SELECT Employee_email, Employee_pass FROM employee WHERE Employee_email = %s AND Employee_pass = %s",
-            (username, password))
-        # if cursor.fetchone()[]:
-        #     cursor.close()
-        #     return redirect(url_for("front-desk"))
-        cursor.close()
-        return False
-    return redirect(url_for("admin"))
 
+#######################################################################################################################
 
-@app.route("/front-desk")
-def front_desk():
-    return render_template("front-desk.html")
-
-
-@app.route("/front_desk", methods=["GET", "POST"])
-def front_desk_():
-    if request.method == "POST":
-        data = request.get_json()
-        quantity = data.get("quantity")
-        service_type = data.get("services")
-        Booking_id = data.get("booking_no")
-        cur = conn.cursor()
-        cur.execute(f"SELECT service_id from services where service_type = '{service_type}'")
-        service_id = cur.fetchone()[0]
-        cur.execute(
-            f"SELECT * from booked_service where booking_Booking_id = '{Booking_id}' and service_Service_id = '{service_id}'")
-        flag = cur.fetchone()
-        if flag == None:
-            cur.execute(
-                f"INSERT INTO booked_service(booking_Booking_id, service_Service_id, Quantity) value ('{Booking_id}','{service_id}','{quantity}')")
-            cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
-        else:
-            cur.execute(
-                f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Boooking_id = '{Booking_id}'")
-            cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
-        cur.close()
-        return jsonify({"success": True})
-
-
-@app.route("/logout", methods=["POST"])
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('login_page'))
+# Homepage
+@app.route('/homepage', methods=["GET"])
+def homepage():
+    if 'username' in session:
+        return render_template('Home_page.html', logout_button=True, min_date_str=min_date_str,
+                               max_date_str=max_date_str, min_date_str_max=min_date_str_max, fixed_bar=True)
+    else:
+        return redirect(url_for('login_page'))
 
 
 @app.route("/get-data", methods=["POST"])
@@ -193,14 +109,12 @@ def get_data():
     checkout = request.form['checkout']
     room_type = request.form['room_type']
     bed_count = request.form['bed_count']
-
     cur = conn.cursor()
     cur.execute(
         f"SELECT * FROM room WHERE Room_type='{room_type}' AND no_of_beds='{bed_count}' AND Room_no NOT IN (SELECT room_Room_no FROM booked_room WHERE '{checkin}' BETWEEN Check_in AND Check_out OR '{checkout}' BETWEEN Check_in AND Check_out)"
     )
     rows = cur.fetchall()
     cur.close()
-
     data = []
     for row in rows:
         data.append({
@@ -212,58 +126,43 @@ def get_data():
     return jsonify(data)
 
 
+#######################################################################################################################
+
+#######################################################################################################################
+
+
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
+
+
 @app.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
-    item = request.get_json()['item']
+    item = request.json[""]
+    cur = conn.cursor()
+    cur.execute(f"Select customer_id from customer where Customer_email='{session['username']}'")
+    customer_id = cur.fetchall()
+    conn.commit()
+    cur.execute(f"insert into booking (customer_customer_id) values ({customer_id[0][0]})")
+    conn.commit()
+    booking_id = cur.execute(
+        f"select booking_id from booking where customer_customer_id={customer_id[0][0]} order by booking_id desc limit 1")
+    for row in item:
+        cur.execute(
+            f"insert into booked_room(booking_Booking_id, Check_in, Check_out, room_Room_no) value ('{booking_id}', '{Check_in_date}','{Check_out_date}','{room_Room_no}')")
 
-    # Load the JSON file
-    with open('cart.json', 'r') as f:
-        cart = json.load(f)
-
-    # Add the item to the cart
-    cart.append(item)
-
-    # Save the updated cart to the JSON file
-    with open('cart.json', 'w') as f:
-        json.dump(cart, f)
+    conn.commit()
+    cur.close()
 
     return jsonify({'success': True})
 
 
-@app.route("/data-retrieval", methods=["POST"])
-def retrieval_admin_data():
-    cur = conn.cursor()
-    cur.execute(
-        f"SELECT * FROM "
-    )
-    rows = cur.fetchall()
-    cur.close()
+#######################################################################################################################
 
+#######################################################################################################################
 
-@app.route('/service', methods=['POST'])
-def service():
-    quantity = 5
-    service_type = 'BANQUETTE'
-    Booking_id = "4"
-    cur = conn.cursor()
-    cur.execute(f"SELECT service_id from services where service_type = '{service_type}'")
-    service_id = cur.fetchone()[0]
-    cur.execute(
-        f"SELECT * from booked_service where booking_Booking_id = '{Booking_id}' and service_Service_id = '{service_id}'")
-    flag = cur.fetchone()
-    if flag == None:
-        cur.execute(
-            f"INSERT INTO booked_service(booking_Booking_id, service_Service_id, Quantity) value ('{Booking_id}','{service_id}','{quantity}')")
-        cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
-    else:
-        cur.execute(
-            f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Boooking_id = '{Booking_id}'")
-        cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
-    cur.close()
-
-
-@app.route('/manager', methods=['POST'])
-def get_bookings():
+@app.route("/manager")
+def manager():
     cursor = conn.cursor()
     cursor.execute(
         "SELECT Booking_id, Customer_name, Customer_email, Check_in, Check_out FROM booking, customer, booked_room WHERE booking_Booking_id = Booking_id AND Customer_id = booking.customer_Customer_id AND curdate() BETWEEN Check_in AND Check_out")
@@ -291,29 +190,219 @@ def get_bookings():
         })
     data1.append(data)
     data = []
-    cursor.close()
+    cursor.execute(f"select Employee_id, Employee_name, Designation, Salary from employee order by Employee_id")
+    bookings = cursor.fetchall()
+    for row in bookings:
+        data.append({
+            "Date": row[0],
+            "Revenue": row[1],
+            "Expenses": row[2],
+            "Profit": row[3]
+        })
+    data1.append(data)
+    data = []
+    cursor.execute(f"select Employee_id, Employee_name, Designation, Salary from employee order by Employee_id")
+    bookings = cursor.fetchall()
+    for row in bookings:
+        data.append({
+            "Date": row[0],
+            "Category": row[1],
+            "Description": row[2],
+            "Amount": row[3]
+        })
+    data1.append(data)
+    data = []
+    cursor.execute(f"select Employee_id, Employee_name, Designation, Salary from employee order by Employee_id")
+    bookings = cursor.fetchall()
+    for row in bookings:
+        data.append({
+            "Date": row[0],
+            "Item": row[1],
+            "Quantity": row[2],
+            "Cost": row[3]
+        })
+    data1.append(data)
     print(data1)
-    return jsonify(data1)
-
-
-@app.route('/admin_verification', methods=['POST'])
-def admin_verification():
-    email = request.json['username']
-    password = request.json['password']
-    cur = conn.cursor()
-    cur.execute(
-        f"select Designation from Employee where Employee_email = '{email}' and Employee_pass = '{password}';")
-    flag = cur.fetchone()
-    if flag == None:
-        return jsonify({"success": False})
-    else:
-        return jsonify(flag)
-
-
-@app.route('/manager', methods=['GET'])
-def manager_redirect():
+    cursor.close()
+    return render_template("manager.html", delete_bars=True, bookings=data1)
 
 
 #######################################################################################################################
+
+#######################################################################################################################
+
+
+# Signup
+@app.route('/signup', methods=['POST'])
+def signup():
+    return redirect(url_for('login_page'))
+
+
+# Signup
+@app.route("/signup_page", methods=["GET", "POST"])
+def signup_page():
+    if "username" in session:
+        return redirect(url_for("homepage"))
+    elif request.method == "POST":
+        name = request.json.get("name")
+        dob = request.json.get("dob")
+        email = request.json.get("email")
+        password = request.json.get("password")
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO customer (Customer_name, Customer_email, Customer_password, Customer_DOB) VALUES (%s, %s, %s, %s)",
+            (name, email, password, dob))
+        conn.commit()
+        cur.close()
+        return redirect(url_for('login_page'))
+    elif request.method == "GET":
+        return render_template("Signup.html")
+
+
+#######################################################################################################################
+
+#######################################################################################################################
+
+@app.route('/admin_verification', methods=['POST'])
+def admin_verification():
+    email = request.json['Email']
+    password = request.json['Password']
+    print(email, password)
+    cur = conn.cursor()
+    cur.execute(
+        f"select Designation from Employee where Employee_email = '{email}' and Employee_pass = '{password}'")
+    flag = cur.fetchone()[0]
+    print(flag)
+    if flag == 'Manager':
+        session['Manager'] = email
+        return redirect(url_for("manager"))
+    elif flag == 'Front Desk':
+        session['FrontDesk'] = email
+        return redirect(url_for("front_desk"))
+    else:
+        pass  # TODO: add condition for alerting that wrong password has been entered
+
+
+@app.route('/admin')
+def admin_render():
+    session.pop('username', None)
+    # TODO: add session conditions here
+    return render_template("_admin_login.html")
+
+
+#######################################################################################################################
+
+#######################################################################################################################
+
+@app.route("/front-desk", methods=["GET"])
+def front_desk():
+    return render_template("front-desk.html")
+
+
+def status_generation(check_in, check_out):
+    if check_in > date.today():
+        return "Upcoming"
+    else:
+        return "Ongoing"
+
+
+@app.route("/front-desk-data")
+def front_desk_data():
+    cur = conn.cursor()
+    cur.execute(
+        f"select Booking_id, Customer_name, room_Room_no, check_in, check_out from customer, booking, booked_room where Customer_id = customer_Customer_id AND Booking_id = booking_Booking_id AND((curdate() between check_in and check_out) or (curdate() < check_in));")
+    __booking__data__ = cur.fetchall()
+    print(__booking__data__)
+    cur.close()
+    data = []
+    for row in __booking__data__:
+        data.append({
+            "Booking_id": row[0],
+            "Customer_name": row[1],
+            "Room_no": row[2],
+            "Check_in": str(row[3]),
+            "Check_out": str(row[4]),
+            "Status": status_generation(row[3], row[4])
+        })
+    return jsonify(data)
+
+
+@app.route("/front-desk-data/<int:booking_id>", methods=["DELETE"])
+def front_desk_delete(booking_id):
+    try:
+        print(1)
+        cur = conn.cursor()
+        cur.execute(
+            f"delete from booked_room where booking_Booking_id = '{booking_id}'")
+        conn.commit()
+        cur.execute(
+            f"delete from booking where Booking_id = '{booking_id}'")
+        conn.commit()
+        cur.close()
+        return '', 204
+    except Exception as e:
+        return '', 404
+
+
+# TODO: Make sure the booking getting the service is being selected
+#       Handle the POST request on the front end so that the services get booked against an event made by a button
+
+@app.route("/front_desk", methods=["GET", "POST"])
+def front_desk_():
+    if request.method == "POST":
+        data = request.get_json()
+        quantity = data.get("quantity")
+        service_type = data.get("services")
+        Booking_id = data.get("booking_no")
+        cur = conn.cursor()
+        cur.execute(f"SELECT service_id from services where service_type = '{service_type}'")
+        service_id = cur.fetchone()[0]
+        cur.execute(
+            f"select room_Room_no from booked_room where booking_Booking_id = '{Booking_id}' and curdate() between Check_in and Check_out")
+        flag1 = cur.fetchone()
+        if flag1 is None:
+            return jsonify({"success": False})
+        else:
+            cur.execute(
+                f"SELECT * from booked_service where booking_Booking_id = '{Booking_id}' and service_Service_id = '{service_id}'")
+            flag = cur.fetchone()
+            if flag is None:
+                cur.execute(
+                    f"INSERT INTO booked_service(booking_Booking_id, service_Service_id, Quantity) value ('{Booking_id}','{service_id}','{quantity}')")
+                cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+                conn.commit()
+                cur.execute(
+                    f"update restock_quantity set Quantity = Quantity + '{quantity}' where service_id = '{service_id}'")
+            else:
+                cur.execute(
+                    f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Boooking_id = '{Booking_id}'")
+                cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+                conn.commit()
+                cur.execute(
+                    f"update restock_quantity set Quantity = Quantity + '{quantity}' where service_id = '{service_id}'")
+            cur.close()
+            return jsonify({"success": True})
+
+
+#######################################################################################################################
+
+#######################################################################################################################
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login_page'))
+
+
+@app.route("/admin_logout", methods=["POST"])
+def admin_logout():
+    session.pop("admin", None)
+    redirect(url_for('admin_render'))
+
+
+#######################################################################################################################
+
+#######################################################################################################################
 if __name__ == "__main__":
-    app.run(debug=True)
+    ls.run()

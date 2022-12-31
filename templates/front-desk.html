@@ -1,103 +1,138 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block body %}
+    <body>
+    <div class="container mt-5">
+        <div id="bookings" class="row">
+            <div class="col-12">
+                <h2>Bookings</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Check in</th>
+                        <th scope="col">Check Out</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="bookingTableBody">
 
-    <title>Front Desk</title>
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Front Desk</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#bookings">Bookings</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#services">Services</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<div class="container mt-5">
-    <div id="bookings" class="row">
-        <div class="col-12">
-            <h2>Bookings</h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Replace this section with code to retrieve and display data from the database -->
-                <tr>
-                    <th scope="row">1</th>
-                    <td>John Doe</td>
-                    <td>john@example.com</td>
-                    <td>123-456-7890</td>
-                    <td>2022-01-01</td>
-                    <td>Confirmed</td>
-                    <td>
-                        <button class="btn btn-danger" disabled>Cancel</button>
-
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jane Smith</td>
-                    <td>jane@example.com</td>
-                    <td>098-765-4321</td>
-                    <td>2022-01-02</td>
-                    <td>Pending</td>
-                    <td>
-                        <button class="btn btn-danger" onclick="cancelBooking(2)">Cancel</button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="services" class="row mt-5">
+            <div class="col-12">
+                <h2>Services</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="bookingNumber">Booking Number</label>
+                        <input type="number" class="form-control" id="bookingNumber"
+                               aria-describedby="bookingNumberHelp">
+                        <small id="bookingNumberHelp" class="form-text text-muted">Enter the booking number to add a
+                            service
+                            to a booking.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="service">Service</label>
+                        <select class="form-control" id="service">
+                            <option>Banquette</option>
+                            <option>Drinks</option>
+                            <option>Room Service</option>
+                            <option>Laundry</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="serviceQuantity">Quantity</label>
+                        <input type="number" class="form-control" id="serviceQuantity" min=0, max=5>
+                    </div>
+                    <button type="submit" id="front_desk_service" class="btn btn-primary">Add Service</button>
+                </form>
+                <h2 class=mt-5>Generate Bill</h2>
+                <div class="form-group">
+                    <label for="bookingId">Booking ID</label>
+                    <input type="text" class="form-control" id="bookingId" aria-describedby="bookingIdHelp">
+                </div>
+                <button type="submit" id="front_desk_service" class="btn btn-primary">Generate Bill</button>
+            </div>
         </div>
     </div>
-    <div id="services" class="row mt-5">
-        <div class="col-12">
-            <h2>Services</h2>
-            <form>
-                <div class="form-group">
-                    <label for="bookingNumber">Booking Number</label>
-                    <input type="number" class="form-control" id="bookingNumber" aria-describedby="bookingNumberHelp">
-                    <small id="bookingNumberHelp" class="form-text text-muted">Enter the booking number to add a service
-                        to a booking.</small>
-                </div>
-                <div class="form-group">
-                    <label for="service">Service</label>
-                    <select class="form-control" id="service">
-                        <option>Banquette</option>
-                        <option>Drinks</option>
-                        <option>Room Service</option>
-                        <option>Laundry</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="serviceQuantity">Quantity</label>
-                    <input type="number" class="form-control" id="serviceQuantity" min = 0, max = 5>
-                </div>
-                <button type="submit" id ="front_desk_service" class="btn btn-primary">Add Service</button>
-            </form>
-        </div>
-    </div>
-</div>
-</body>
-</html>
+    </body>
+    <script>// Front Desk Page
+    function front_desk() {
+        booking_no = document.getElementById('booking-number')
+        services1 = document.getElementById('services')
+        quantity1 = document.getElementById('serviceQuantity')
+        $.ajax({
+            type: "POST",
+            url: "/front_desk",
+            data: {"booking_no": booking_no.value, "services": services1.value, "quantity": quantity1.value},
+            success: function (response) {
+                alert("Successfully added")
+            }
+        });
+
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById("front_desk_service").addEventListener('click', front_desk)
+    });
+
+
+    // const getBookings =
+    // async () => {
+    const response = fetch('/front-desk-data');
+    console.log(response)
+    const bookings = response.json();
+    // }
+    // return bookings;
+    // };
+
+    const addBookingToTable = (booking) => {
+        const bookingsTableBody = document.getElementById('bookingTableBody');
+        const row = document.createElement('tr');
+        row.setAttribute('id', `booking -${booking.id}`);
+        row.innerHTML =
+            `<th scope = "row">${booking.Booking_id} </th>
+            <td>${booking.Customer_name}</td>
+            <td>${booking.Room_no}</td>
+            <td>${booking.Check_in}</td>
+            <td>${booking.Check_in}</td>
+            <td>${booking.Status}</td>
+            <td>
+                <button class="btn btn-danger" onclick="cancelBooking(${booking.id})">Cancel</button>
+            </td>`;
+        bookingsTableBody.appendChild(row);
+    };
+
+    const cancelBooking = async (bookingId) => {
+        const response = await fetch(`/ bookings /${bookingId}`, {method: 'DELETE'});
+        if (response.ok) {
+            // booking was successfully cancelled
+            const bookingRow = document.querySelector(`#booking -${bookingId}`);
+            bookingRow.remove();
+            alert('Booking cancelled successfully');
+        } else {
+            alert('Error cancelling booking');
+            // there was an error cancelling the booking
+            // TODO: display an error message to the user
+        }
+    };
+
+    const displayBookings = async () => {
+        console.log('displaying bookings');
+        const bookings = await getBookings();
+        console.log(bookings);
+        bookings.forEach((booking) => {
+            console.log(booking);
+            addBookingToTable(booking);
+        });
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+        displayBookings();
+    });
+    </script>
+{% endblock %}
