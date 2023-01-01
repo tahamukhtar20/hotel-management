@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{% endblock %}
 {% block body %}
-    <body>
     <div class="container mt-5">
         <div id="bookings" class="row">
             <div class="col-12">
@@ -11,10 +10,8 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Email</th>
                         <th scope="col">Check in</th>
                         <th scope="col">Check Out</th>
-                        <th scope="col">Status</th>
                         <th scope="col">Actions</th>
                     </tr>
                     </thead>
@@ -24,19 +21,16 @@
                 </table>
             </div>
         </div>
-        <div id="services" class="row mt-5">
+        <div id="services" class="row mt-2">
             <div class="col-12">
                 <h2>Services</h2>
                 <form>
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <label for="bookingNumber">Booking Number</label>
-                        <input type="number" class="form-control" id="bookingNumber"
+                        <input type="number" class="form-control" id="bookingNumber" value="1" min="0"
                                aria-describedby="bookingNumberHelp">
-                        <small id="bookingNumberHelp" class="form-text text-muted">Enter the booking number to add a
-                            service
-                            to a booking.</small>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <label for="service">Service</label>
                         <select class="form-control" id="service">
                             <option>Banquette</option>
@@ -45,9 +39,9 @@
                             <option>Laundry</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-4">
                         <label for="serviceQuantity">Quantity</label>
-                        <input type="number" class="form-control" id="serviceQuantity" min=0, max=5>
+                        <input type="number" class="form-control" id="serviceQuantity" value="1" min="0" max="5">
                     </div>
                     <button type="submit" id="front_desk_service" class="btn btn-primary">Add Service</button>
                 </form>
@@ -56,83 +50,86 @@
                     <label for="bookingId">Booking ID</label>
                     <input type="text" class="form-control" id="bookingId" aria-describedby="bookingIdHelp">
                 </div>
-                <button type="submit" id="front_desk_service" class="btn btn-primary">Generate Bill</button>
+                <button type="submit" id="front_desk_service" class="btn btn-primary mt-3">Generate Bill</button>
             </div>
         </div>
     </div>
-    </body>
-    <script>// Front Desk Page
-    function front_desk() {
-        booking_no = document.getElementById('booking-number')
-        services1 = document.getElementById('services')
-        quantity1 = document.getElementById('serviceQuantity')
-        $.ajax({
-            type: "POST",
-            url: "/front_desk",
-            data: {"booking_no": booking_no.value, "services": services1.value, "quantity": quantity1.value},
-            success: function (response) {
-                alert("Successfully added")
-            }
-        });
-
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById("front_desk_service").addEventListener('click', front_desk)
-    });
-
-
-    // const getBookings =
-    // async () => {
-    const response = fetch('/front-desk-data');
-    console.log(response)
-    const bookings = response.json();
-    // }
-    // return bookings;
-    // };
-
-    const addBookingToTable = (booking) => {
-        const bookingsTableBody = document.getElementById('bookingTableBody');
-        const row = document.createElement('tr');
-        row.setAttribute('id', `booking -${booking.id}`);
-        row.innerHTML =
-            `<th scope = "row">${booking.Booking_id} </th>
-            <td>${booking.Customer_name}</td>
-            <td>${booking.Room_no}</td>
-            <td>${booking.Check_in}</td>
-            <td>${booking.Check_in}</td>
-            <td>${booking.Status}</td>
-            <td>
-                <button class="btn btn-danger" onclick="cancelBooking(${booking.id})">Cancel</button>
-            </td>`;
-        bookingsTableBody.appendChild(row);
-    };
-
-    const cancelBooking = async (bookingId) => {
-        const response = await fetch(`/ bookings /${bookingId}`, {method: 'DELETE'});
-        if (response.ok) {
-            // booking was successfully cancelled
-            const bookingRow = document.querySelector(`#booking -${bookingId}`);
-            bookingRow.remove();
-            alert('Booking cancelled successfully');
-        } else {
-            alert('Error cancelling booking');
-            // there was an error cancelling the booking
-            // TODO: display an error message to the user
+    <style>
+        .fixed-bottom {
+            position: relative;
+        !important;
         }
-    };
+    </style>
+    <script>
+        function getBookings() {
+            $.ajax({
+                url: '/front-desk-data',
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    console.log("here");
+                    let bookings = data;
+                    let bookingTableBody = document.getElementById('bookingTableBody');
+                    bookingTableBody.innerHTML = '';
+                    for (let i = 0; i < bookings.length; i++) {
+                        let booking = bookings[i];
+                        let row = document.createElement('tr');
+                        console.log(booking);
+                        row.innerHTML = `
+                            <th scope="row">${booking["Booking_id"]}</th>
+                            <td>${booking["Customer_name"]}</td>
+                            <td>${booking["Check_in"]}</td>
+                            <td>${booking["Check_out"]}</td>
+                            <td>
+                                <button type="button" class="btn btn-danger" onclick="deleteBooking(${booking["Booking_id"]})">Cancel</button>
+                            </td>
+                        `;
+                        bookingTableBody.appendChild(row);
+                    }
+                }
+            });
+        }
 
-    const displayBookings = async () => {
-        console.log('displaying bookings');
-        const bookings = await getBookings();
-        console.log(bookings);
-        bookings.forEach((booking) => {
-            console.log(booking);
-            addBookingToTable(booking);
+        function addService() {
+            $('#services form').submit(function (event) {
+                event.preventDefault();
+
+                let formData = {
+                    'booking_no': $('#bookingNumber').val(),
+                    'services': $('#service').val(),
+                    'quantity': $('#serviceQuantity').val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '/front-desk-data/add-service',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function () {
+                        $('#services form')[0].reset();
+                    }
+                });
+            });
+        }
+        function generateBill() {
+
+        }
+
+        function deleteBooking(bookingId) {
+            $.ajax({
+                url: '/front-desk-data/' + bookingId,
+                type: 'DELETE',
+                success: function () {
+                    location.reload();
+                }
+            });
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            getBookings();
+            document.getElementById('front_desk_service').addEventListener('click', addService);
+            document.getElementById('front_desk_bill').addEventListener('click', generateBill);
         });
-    };
-    document.addEventListener('DOMContentLoaded', () => {
-        displayBookings();
-    });
     </script>
 {% endblock %}

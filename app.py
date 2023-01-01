@@ -138,23 +138,41 @@ def cart():
 
 @app.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
-    item = request.json[""]
-    cur = conn.cursor()
-    cur.execute(f"Select customer_id from customer where Customer_email='{session['username']}'")
-    customer_id = cur.fetchall()
-    conn.commit()
-    cur.execute(f"insert into booking (customer_customer_id) values ({customer_id[0][0]})")
-    conn.commit()
-    booking_id = cur.execute(
-        f"select booking_id from booking where customer_customer_id={customer_id[0][0]} order by booking_id desc limit 1")
-    for row in item:
+    try:
+        item = request.json["items"]
+        print(item)
+        cur = conn.cursor()
+        cur.execute(f"Select customer_id from customer where Customer_email='{session['username']}'")
+        customer_id = cur.fetchall()
+        customer_id = customer_id[0][0]
+        print(customer_id)
+        conn.commit()
+        cur.execute(f"insert into booking (customer_customer_id) values ('{customer_id}')")
+        conn.commit()
         cur.execute(
-            f"insert into booked_room(booking_Booking_id, Check_in, Check_out, room_Room_no) value ('{booking_id}', '{Check_in_date}','{Check_out_date}','{room_Room_no}')")
+            f"select booking_id from booking where customer_customer_id='{customer_id}' order by booking_id desc limit 1")
+        booking_id = cur.fetchone()
+        print(booking_id)
+        booking_id = booking_id[0]
+        print(booking_id)
+        for key, value in item.items():
+            print(key, value)
+            Check_in_date = value[4]
+            Check_out_date = value[5]
+            room_Room_no = key
+            cur.execute(
+                f"insert into booked_room(booking_Booking_id, Check_in, Check_out, room_Room_no) value ('{booking_id}', '{Check_in_date}','{Check_out_date}','{room_Room_no}')")
+        conn.commit()
+        cur.close()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        print(e)
+        pass
 
-    conn.commit()
-    cur.close()
 
-    return jsonify({'success': True})
+@app.route('/bill')
+def bill():
+    return render_template('bill_Generation.html')
 
 
 #######################################################################################################################
@@ -327,6 +345,42 @@ def front_desk_data():
     return jsonify(data)
 
 
+@app.route("/front-desk-data/add-service", methods=["POST"])
+def front_desk_data_add_service():
+    data = request.get_json()
+    quantity = data.get("quantity")
+    service_type = data.get("services")
+    Booking_id = data.get("booking_no")
+    cur = conn.cursor()
+    cur.execute(f"SELECT service_id from services where service_type = '{service_type}'")
+    service_id = cur.fetchone()[0]
+    cur.execute(
+        f"select room_Room_no from booked_room where booking_Booking_id = '{Booking_id}' and curdate() between Check_in and Check_out")
+    flag1 = cur.fetchone()
+    if flag1 is None:
+        return jsonify({"success": False})
+    else:
+        cur.execute(
+            f"SELECT * from booked_service where booking_Booking_id = '{Booking_id}' and service_Service_id = '{service_id}'")
+        flag = cur.fetchone()
+        if flag is None:
+            cur.execute(
+                f"INSERT INTO booked_service(booking_Booking_id, service_Service_id, Quantity) value ('{Booking_id}','{service_id}','{quantity}')")
+            cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+            conn.commit()
+            cur.execute(
+                f"update restocking set restock_quantity = restock_quantity + '{quantity}' where services_Service_id = '{service_id}'")
+        else:
+            cur.execute(
+                f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Booking_id = '{Booking_id}'")
+            cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+            conn.commit()
+            cur.execute(
+                f"update restocking set restock_quantity = restock_quantity + '{quantity}' where services_Service_id = '{service_id}'")
+        cur.close()
+        return jsonify({"success": True})
+
+
 @app.route("/front-desk-data/<int:booking_id>", methods=["DELETE"])
 def front_desk_delete(booking_id):
     try:
@@ -339,7 +393,7 @@ def front_desk_delete(booking_id):
             f"delete from booking where Booking_id = '{booking_id}'")
         conn.commit()
         cur.close()
-        return '', 204
+        return jsonify({"status": "success"})
     except Exception as e:
         return '', 404
 
@@ -369,17 +423,19 @@ def front_desk_():
             if flag is None:
                 cur.execute(
                     f"INSERT INTO booked_service(booking_Booking_id, service_Service_id, Quantity) value ('{Booking_id}','{service_id}','{quantity}')")
-                cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+                cur.execute(
+                    f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
                 conn.commit()
                 cur.execute(
-                    f"update restock_quantity set Quantity = Quantity + '{quantity}' where service_id = '{service_id}'")
+                    f"update restocking.restock_quantity set Quantity = Quantity + '{quantity}' where service_id = '{service_id}'")
             else:
                 cur.execute(
-                    f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Boooking_id = '{Booking_id}'")
-                cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
+                    f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Booking_id = '{Booking_id}'")
+                cur.execute(
+                    f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
                 conn.commit()
                 cur.execute(
-                    f"update restock_quantity set Quantity = Quantity + '{quantity}' where service_id = '{service_id}'")
+                    f"update restocking.restock_quantity set Quantity = Quantity + '{quantity}' where service_id = '{service_id}'")
             cur.close()
             return jsonify({"success": True})
 
@@ -387,7 +443,6 @@ def front_desk_():
 #######################################################################################################################
 
 #######################################################################################################################
-
 
 @app.route("/logout", methods=["POST"])
 def logout():
