@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block head %}
     <title>Login Page</title>
+    <script src = "{{ url_for("static", filename="js/Admin.js") }}"></script>
 {% endblock %}
 {% block body %}
     <section>
@@ -25,5 +26,5 @@
             </button>
         </form>
     </section>
-    <script src = "{{ url_for("static", filename="js/Admin.js") }}"></script>
+
 {% endblock %}

@@ -2,6 +2,7 @@
 {% block head %}
     <title>My Title</title>
     <script src="{{ url_for('static', filename='js/Customer.js') }}"></script>
+    <script src="{{ url_for("static", filename="js/signup.js") }}"></script>
 {% endblock %}
 {% block body %}
     <div>
@@ -41,5 +42,4 @@
             </div>
         </form>
     </div>
-    <script src="{{ url_for("static", filename="js/signup   .js") }}"></script>
 {% endblock %}

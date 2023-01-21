@@ -2,6 +2,7 @@
 
 {% block head %}
     <title>Cart</title>
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -25,7 +26,5 @@
         </div>
         <p class="justify-content-center h1"></p>
     </div>
-    <script src="{{ url_for('static', filename='js/cart.js') }}">
 
-    </script>
 {% endblock %}
