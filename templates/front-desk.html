@@ -16,7 +16,6 @@
                     </tr>
                     </thead>
                     <tbody id="bookingTableBody">
-
                     </tbody>
                 </table>
             </div>
@@ -46,90 +45,10 @@
                     <button type="submit" id="front_desk_service" class="btn btn-primary">Add Service</button>
                 </form>
                 <h2 class=mt-5>Generate Bill</h2>
-                <div class="form-group">
-                    <label for="bookingId">Booking ID</label>
-                    <input type="text" class="form-control" id="bookingId" aria-describedby="bookingIdHelp">
-                </div>
-                <button type="submit" id="front_desk_service" class="btn btn-primary mt-3">Generate Bill</button>
+                <a type="submit" id="front_desk_service" class="btn btn-primary mt-3"
+                   href="/generate-bill">Generate Bill</a>
             </div>
         </div>
     </div>
-    <style>
-        .fixed-bottom {
-            position: relative;
-        !important;
-        }
-    </style>
-    <script>
-        function getBookings() {
-            $.ajax({
-                url: '/front-desk-data',
-                type: 'GET',
-                success: function (data) {
-                    console.log(data);
-                    console.log("here");
-                    let bookings = data;
-                    let bookingTableBody = document.getElementById('bookingTableBody');
-                    bookingTableBody.innerHTML = '';
-                    for (let i = 0; i < bookings.length; i++) {
-                        let booking = bookings[i];
-                        let row = document.createElement('tr');
-                        console.log(booking);
-                        row.innerHTML = `
-                            <th scope="row">${booking["Booking_id"]}</th>
-                            <td>${booking["Customer_name"]}</td>
-                            <td>${booking["Check_in"]}</td>
-                            <td>${booking["Check_out"]}</td>
-                            <td>
-                                <button type="button" class="btn btn-danger" onclick="deleteBooking(${booking["Booking_id"]})">Cancel</button>
-                            </td>
-                        `;
-                        bookingTableBody.appendChild(row);
-                    }
-                }
-            });
-        }
-
-        function addService() {
-            $('#services form').submit(function (event) {
-                event.preventDefault();
-
-                let formData = {
-                    'booking_no': $('#bookingNumber').val(),
-                    'services': $('#service').val(),
-                    'quantity': $('#serviceQuantity').val()
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: '/front-desk-data/add-service',
-                    data: JSON.stringify(formData),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function () {
-                        $('#services form')[0].reset();
-                    }
-                });
-            });
-        }
-        function generateBill() {
-
-        }
-
-        function deleteBooking(bookingId) {
-            $.ajax({
-                url: '/front-desk-data/' + bookingId,
-                type: 'DELETE',
-                success: function () {
-                    location.reload();
-                }
-            });
-        }
-
-
-        document.addEventListener('DOMContentLoaded', function () {
-            getBookings();
-            document.getElementById('front_desk_service').addEventListener('click', addService);
-            document.getElementById('front_desk_bill').addEventListener('click', generateBill);
-        });
-    </script>
+    <script src = "{{ url_for("static", filename="js/frontdesk.js") }}"></script>
 {% endblock %}

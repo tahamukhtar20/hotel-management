@@ -12,16 +12,10 @@
                     <a class="nav-link" href="#salaries">Employee Salaries</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#bills">Management Bills</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="#profit">Profit</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#expenses">Expenses</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#restock">Restocking</a>
                 </li>
             </ul>
         </div>
@@ -80,40 +74,6 @@
                 </table>
             </div>
         </div>
-        <div id="bills" class="row mt-5">
-            <div class="col-12">
-                <h2>Management Bills</h2>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Vendor</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Due Date</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>ACME Inc.</td>
-                        <td>$1000</td>
-                        <td>2022-01-15</td>
-                        <td>Paid</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>XYZ Corp.</td>
-                        <td>$2000</td>
-                        <td>2022-01
-                            -01
-                        </td>
-                        <td>Unpaid</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
         <div id="profit" class="row mt-5">
             <div class="col-12">
                 <h2>Profit</h2>
@@ -146,43 +106,19 @@
                     <thead>
                     <tr>
                         <th scope="col">Date</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Amount</th>
+                        <th scope="col">Management Bills</th>
+                        <th scope="col">Restocking Bills</th>
+                        <th scope="col">Salary Expense</th>
+
                     </tr>
                     </thead>
                     <tbody>
                     {% for booking in bookings[3] %}
                         <tr>
                             <th scope="row">{{ booking["Date"] }}</th>
-                            <td>{{ booking["Category"] }}</td>
-                            <td>{{ booking["Description"] }}</td>
-                            <td>{{ booking["Amount"] }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div id="restock" class="row mt-5">
-            <div class="col-12">
-                <h2>Restocking</h2>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Item</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Cost</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for booking in bookings[4] %}
-                        <tr>
-                            <th scope="row">{{ booking["Date"] }}</th>
-                            <td>{{ booking["Item"] }}</td>
-                            <td>{{ booking["Quantity"] }}</td>
-                            <td>{{ booking["Cost"] }}</td>
+                            <td>{{ booking["ManagementBills"] }}</td>
+                            <td>{{ booking["restocking_bill"] }}</td>
+                            <td>{{ booking["Salary_expense"] }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -206,38 +142,6 @@
             </div>
         </footer>
     </div>
-    <script>
-        function manager_panel() {
-            $.ajax({
-                url: '/manager', type: 'POST', success: function (response1) {
-                    let tbody = $('#bookings tbody');
-                    let response = response1[1]
-                    tbody.empty();
-                    for (let i = 0; i < response.length; i++) {
-                        let booking = response[i];
-                        let tr = $('<tr>');
-                        tr.append($('<td>').text(booking["Booking_id"]));
-                        tr.append($('<td>').text(booking["Customer_name"]));
-                        tr.append($('<td>').text(booking["Customer_email"]));
-                        tr.append($('<td>').text(booking["Check_in"]));
-                        tr.append($('<td>').text(booking["Check_out"]));
-                        tbody.append(tr);
-                    }
-                    response = response1[0]
-                    tbody = $('#salaries tbody')
-                    tbody.empty()
-                    for (let i = 0; i < response.length; i++) {
-                        let booking = response[i];
-                        let tr = $('<tr>');
-                        tr.append($('<td>').text(booking["EmployeeNumber"]));
-                        tr.append($('<td>').text(booking["Employee"]));
-                        tr.append($('<td>').text(booking["Designation"]));
-                        tr.append($('<td>').text(bookingd["Salary"]));
-                        tbody.append(tr);
-                    }
-                }
-            });
-        }
-    </script>
+    <script src="{{ url_for("static", filename="js/manager.js") }}"></script>
 {% endblock %}
 

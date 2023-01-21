@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta, date
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify
 from flask_session import Session
-import json
 from liveserver import LiveServer
 import mysql.connector
 
@@ -162,6 +161,7 @@ def add_to_cart():
             room_Room_no = key
             cur.execute(
                 f"insert into booked_room(booking_Booking_id, Check_in, Check_out, room_Room_no) value ('{booking_id}', '{Check_in_date}','{Check_out_date}','{room_Room_no}')")
+        cur.execute(f"call room_price_insertion('{booking_id}');")
         conn.commit()
         cur.close()
         return jsonify({"status": "success"})
@@ -219,25 +219,15 @@ def manager():
         })
     data1.append(data)
     data = []
-    cursor.execute(f"select Employee_id, Employee_name, Designation, Salary from employee order by Employee_id")
+    cursor.execute(
+        f"select DMY, Management_bills, restocking_bill, Salary_expense from hotel_expenses order by DMY desc limit 10")
     bookings = cursor.fetchall()
     for row in bookings:
         data.append({
             "Date": row[0],
-            "Category": row[1],
-            "Description": row[2],
-            "Amount": row[3]
-        })
-    data1.append(data)
-    data = []
-    cursor.execute(f"select Employee_id, Employee_name, Designation, Salary from employee order by Employee_id")
-    bookings = cursor.fetchall()
-    for row in bookings:
-        data.append({
-            "Date": row[0],
-            "Item": row[1],
-            "Quantity": row[2],
-            "Cost": row[3]
+            "ManagementBills": row[1],
+            "restocking_bill": row[2],
+            "Salary_expense": row[3]
         })
     data1.append(data)
     print(data1)
@@ -268,7 +258,8 @@ def signup_page():
         password = request.json.get("password")
         cur = conn.cursor()
         cur.execute(
-            "INSERT INTO customer (Customer_name, Customer_email, Customer_password, Customer_DOB) VALUES (%s, %s, %s, %s)",
+            "INSERT INTO customer (Customer_name, Customer_email, Customer_password, Customer_DOB) VALUES (%s, %s, "
+            "%s, %s)",
             (name, email, password, dob))
         conn.commit()
         cur.close()
@@ -328,7 +319,7 @@ def status_generation(check_in, check_out):
 def front_desk_data():
     cur = conn.cursor()
     cur.execute(
-        f"select Booking_id, Customer_name, room_Room_no, check_in, check_out from customer, booking, booked_room where Customer_id = customer_Customer_id AND Booking_id = booking_Booking_id AND((curdate() between check_in and check_out) or (curdate() < check_in));")
+        f"select Booking_id, Customer_name, room_Room_no, check_in, check_out from customer, booking, booked_room where Customer_id = customer_Customer_id AND Booking_id = booking_Booking_id AND((curdate() between check_in and check_out) or (curdate() <= check_in));")
     __booking__data__ = cur.fetchall()
     print(__booking__data__)
     cur.close()
@@ -345,6 +336,7 @@ def front_desk_data():
     return jsonify(data)
 
 
+
 @app.route("/front-desk-data/add-service", methods=["POST"])
 def front_desk_data_add_service():
     data = request.get_json()
@@ -353,12 +345,15 @@ def front_desk_data_add_service():
     Booking_id = data.get("booking_no")
     cur = conn.cursor()
     cur.execute(f"SELECT service_id from services where service_type = '{service_type}'")
-    service_id = cur.fetchone()[0]
+    service_id = cur.fetchone()
+    if service_id is None:
+        return jsonify({"success": False, "error": "Invalid service type"})
+    service_id = service_id[0]
     cur.execute(
         f"select room_Room_no from booked_room where booking_Booking_id = '{Booking_id}' and curdate() between Check_in and Check_out")
     flag1 = cur.fetchone()
     if flag1 is None:
-        return jsonify({"success": False})
+        return jsonify({"success": False, "error": "Invalid booking id"})
     else:
         cur.execute(
             f"SELECT * from booked_service where booking_Booking_id = '{Booking_id}' and service_Service_id = '{service_id}'")
@@ -367,16 +362,17 @@ def front_desk_data_add_service():
             cur.execute(
                 f"INSERT INTO booked_service(booking_Booking_id, service_Service_id, Quantity) value ('{Booking_id}','{service_id}','{quantity}')")
             cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
-            conn.commit()
             cur.execute(
-                f"update restocking set restock_quantity = restock_quantity + '{quantity}' where services_Service_id = '{service_id}'")
+                f"INSERT INTO restocking (services_Service_id, restock_quantity) VALUES ('{service_id}', '{quantity}') "
+                f"ON DUPLICATE KEY UPDATE restock_quantity = restock_quantity + '{quantity}'")
         else:
             cur.execute(
                 f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Booking_id = '{Booking_id}'")
             cur.execute(f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
-            conn.commit()
             cur.execute(
-                f"update restocking set restock_quantity = restock_quantity + '{quantity}' where services_Service_id = '{service_id}'")
+                f"INSERT INTO restocking (services_Service_id, restock_quantity) VALUES ('{service_id}', '{quantity}') "
+                f"ON DUPLICATE KEY UPDATE restock_quantity = restock_quantity + '{quantity}'")
+        conn.commit()
         cur.close()
         return jsonify({"success": True})
 
@@ -384,8 +380,15 @@ def front_desk_data_add_service():
 @app.route("/front-desk-data/<int:booking_id>", methods=["DELETE"])
 def front_desk_delete(booking_id):
     try:
-        print(1)
         cur = conn.cursor()
+        cur.execute(
+            f"SELECT DMY FROM generated_revenue WHERE DMY = CURDATE()")
+        if cur.fetchone() != None:
+            cur.execute(
+                f"UPDATE generated_revenue SET Room_booking_amount = Room_booking_amount - (SELECT Room_amount FROM booking WHERE Booking_id = '{booking_id}') WHERE DMY = CURDATE();")
+        else:
+            cur.execute(
+                f"INSERT INTO generated_revenue (DMY, Room_booking_amount) VALUES (CURDATE(), (SELECT -1*Room_amount FROM booking WHERE Booking_id = '{booking_id}'));")
         cur.execute(
             f"delete from booked_room where booking_Booking_id = '{booking_id}'")
         conn.commit()
@@ -395,50 +398,31 @@ def front_desk_delete(booking_id):
         cur.close()
         return jsonify({"status": "success"})
     except Exception as e:
+        print(e)
         return '', 404
+
+
+def retrieve_services(booking_id):
+    cur = conn.cursor()
+    cur.execute(f"select service_type , booked_service.Quantity , price_for_sale , (booked_service.Quantity*price_for_sale) as Total from booked_service,services where service_Service_id = Service_id and booking_Booking_id = '{booking_id}';")
+    services = cur.fetchall()
+    cur.close()
+    return services
+
+
+@app.route('/generate-bill', methods=['GET', 'POST'])
+def generate_bill():
+    if request.method == 'POST':
+        booking_id = request.form['bookingId']
+        services = retrieve_services(booking_id)
+        print(services)
+        return jsonify(services)
+    else:
+        return render_template('services_bill.html')
 
 
 # TODO: Make sure the booking getting the service is being selected
 #       Handle the POST request on the front end so that the services get booked against an event made by a button
-
-@app.route("/front_desk", methods=["GET", "POST"])
-def front_desk_():
-    if request.method == "POST":
-        data = request.get_json()
-        quantity = data.get("quantity")
-        service_type = data.get("services")
-        Booking_id = data.get("booking_no")
-        cur = conn.cursor()
-        cur.execute(f"SELECT service_id from services where service_type = '{service_type}'")
-        service_id = cur.fetchone()[0]
-        cur.execute(
-            f"select room_Room_no from booked_room where booking_Booking_id = '{Booking_id}' and curdate() between Check_in and Check_out")
-        flag1 = cur.fetchone()
-        if flag1 is None:
-            return jsonify({"success": False})
-        else:
-            cur.execute(
-                f"SELECT * from booked_service where booking_Booking_id = '{Booking_id}' and service_Service_id = '{service_id}'")
-            flag = cur.fetchone()
-            if flag is None:
-                cur.execute(
-                    f"INSERT INTO booked_service(booking_Booking_id, service_Service_id, Quantity) value ('{Booking_id}','{service_id}','{quantity}')")
-                cur.execute(
-                    f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
-                conn.commit()
-                cur.execute(
-                    f"update restocking.restock_quantity set Quantity = Quantity + '{quantity}' where service_id = '{service_id}'")
-            else:
-                cur.execute(
-                    f"UPDATE booked_service set Quantity = Quantity + '{quantity}' where service_Service_id = '{service_id}' and booking_Booking_id = '{Booking_id}'")
-                cur.execute(
-                    f"UPDATE services set Quantity = Quantity - '{quantity}' where service_id = '{service_id}'")
-                conn.commit()
-                cur.execute(
-                    f"update restocking.restock_quantity set Quantity = Quantity + '{quantity}' where service_id = '{service_id}'")
-            cur.close()
-            return jsonify({"success": True})
-
 
 #######################################################################################################################
 
