@@ -15,3 +15,5 @@ This project is a web-based hotel management system that allows users to book mu
 - MySQL: Used for storing and retrieving data for the system.
 - Flask Sessions: Used for managing user sessions in the system.
 
+The complete normalized ERD is shown below
+![img](Project.png)
