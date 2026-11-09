@@ -2,7 +2,7 @@
 
 A hotel booking and operations app. Guests search for free rooms, book several at once and get an invoice. The front desk sees who is in house, adds services such as room service or laundry to a stay, checks guests out and prints bills. The manager sees current bookings, staff salaries, daily revenue, expenses and profit.
 
-It runs serverless on Cloudflare Workers with [Hono](https://hono.dev) and a [D1](https://developers.cloudflare.com/d1/) (SQLite) database. Pages are rendered on the server, with no client-side framework.
+Live at [hotel.tahamukhtar.com](https://hotel.tahamukhtar.com). It runs serverless on Cloudflare Workers with [Hono](https://hono.dev) and a [D1](https://developers.cloudflare.com/d1/) (SQLite) database. Pages are rendered on the server, with no client-side framework.
 
 ## Try it
 
