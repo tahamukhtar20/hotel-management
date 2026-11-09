@@ -1,0 +1,152 @@
+/* On top of Bootstrap 5. The welcome screen and black buttons come from the original project. */
+
+.screen-welcome {
+  min-height: 100vh;
+  margin: 0;
+  background: #0f000f;
+  background-image: radial-gradient(circle at top left, #06357a 0%, #0f000f 60%, transparent),
+    radial-gradient(circle at bottom right, #34113f 0%, #0f000f 70%, transparent);
+  color: #f1f1f1;
+}
+
+.welcome {
+  padding: clamp(4rem, 18vh, 12rem) clamp(1.25rem, 6vw, 4rem) 4rem;
+}
+
+.huge-title {
+  margin: 0;
+  font-size: clamp(4rem, 14vw, 9.5rem);
+  font-weight: 300;
+  line-height: 1;
+  color: #f7f7f7;
+}
+
+.welcome-sub {
+  margin: 1.25rem 0 2rem;
+  max-width: 34rem;
+  color: #c9c9d1;
+  font-size: 1.1rem;
+}
+
+.welcome-staff {
+  margin-top: 1.5rem;
+}
+
+.welcome-staff a {
+  color: #9aa7c7;
+}
+
+/* Black button with a white sweep on hover. */
+.btn1 {
+  min-width: 9rem;
+  padding: 0 1.25rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 2.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.effect01 {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background-color: #000;
+  border: 3px solid #000;
+  box-shadow: 0 0 0 1px #000 inset;
+  transition: all 0.3s ease-in-out;
+}
+
+.effect01:hover,
+.effect01:focus-visible {
+  color: #222;
+  background-color: #fff;
+  border-color: #666;
+  box-shadow: 0 0 0 3px #eee inset;
+}
+
+.effect01::after {
+  content: "";
+  position: absolute;
+  top: -50px;
+  left: -75px;
+  width: 50px;
+  height: 155px;
+  background: #fff;
+  opacity: 0.8;
+  transform: rotate(35deg);
+  transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.effect01:hover::after {
+  left: 120%;
+  opacity: 0;
+  transform: rotate(40deg);
+}
+
+.screen-welcome .effect01 {
+  border-color: #f1f1f1;
+  box-shadow: none;
+}
+
+.button-left {
+  border-top-left-radius: 2rem !important;
+  border-bottom-left-radius: 2rem !important;
+}
+
+.button-right {
+  border-top-right-radius: 2rem !important;
+  border-bottom-right-radius: 2rem !important;
+}
+
+.form-narrow {
+  max-width: 30rem;
+  margin: 2rem auto;
+}
+
+.search-panel {
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  background: #f1f3f3;
+}
+
+.demo-box {
+  padding: 1rem 1.25rem;
+  border: 1px dashed #adb5bd;
+  border-radius: 0.5rem;
+}
+
+.manager-nav {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: #212529;
+}
+
+.manager-nav a {
+  color: #dee2e6;
+  text-decoration: none;
+}
+
+.manager-nav a:hover {
+  color: #fff;
+}
+
+@media (max-width: 575px) {
+  .welcome-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 18rem;
+  }
+
+  .welcome-buttons .btn {
+    border-radius: 2rem !important;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media print {
+  nav,
+  footer {
+    display: none !important;
+  }
+}

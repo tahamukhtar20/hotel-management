@@ -1,0 +1,2 @@
+# Local development only. In production, set it with: npx wrangler secret put SESSION_SECRET
+SESSION_SECRET=

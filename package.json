@@ -1,8 +1,20 @@
 {
-  "name": "flaskProject2",
-  "version": "1.0.0",
+  "name": "hotel-management-system",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "db:migrate": "wrangler d1 migrations apply hotel --local",
+    "db:migrate:remote": "wrangler d1 migrations apply hotel --remote",
+    "typecheck": "tsc --noEmit",
+    "deploy": "wrangler deploy"
+  },
   "dependencies": {
-    "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.1"
+    "hono": "^4.13.17"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261109.1",
+    "typescript": "^7.0.2",
+    "wrangler": "^4.149.0"
   }
 }
