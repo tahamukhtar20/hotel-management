@@ -1,48 +1,173 @@
-/* On top of Bootstrap 5. The welcome screen and black buttons come from the original project. */
+/* On top of Bootstrap 5. Colours and the black sweep buttons come from the original project. */
 
-.screen-welcome {
-  min-height: 100vh;
-  margin: 0;
-  background: #0f000f;
-  background-image: radial-gradient(circle at top left, #06357a 0%, #0f000f 60%, transparent),
-    radial-gradient(circle at bottom right, #34113f 0%, #0f000f 70%, transparent);
-  color: #f1f1f1;
+:root {
+  --ink: #12121a;
+  --night: #0f000f;
+  --navy: #06357a;
+  --plum: #34113f;
+  --page: #f5f6f8;
+  --line: #e6e7eb;
+  --bs-body-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --bs-body-color: #1d1f24;
+  --bs-border-color: var(--line);
+  --bs-link-color-rgb: 6, 53, 122;
 }
 
-.welcome {
-  padding: clamp(4rem, 18vh, 12rem) clamp(1.25rem, 6vw, 4rem) 4rem;
+body.app {
+  background: var(--page);
 }
 
-.huge-title {
-  margin: 0;
-  font-size: clamp(4rem, 14vw, 9.5rem);
-  font-weight: 300;
-  line-height: 1;
-  color: #f7f7f7;
+h1, h2, h3, .h1, .h2, .h3, .h4, .h5 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
 
-.welcome-sub {
-  margin: 1.25rem 0 2rem;
-  max-width: 34rem;
-  color: #c9c9d1;
+/* ---------- top bar ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(100deg, #0b1d40 0%, #140b22 60%, #23102c 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 6px 20px rgba(10, 6, 25, 0.18);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--ink);
+  font-weight: 700;
   font-size: 1.1rem;
+  text-decoration: none;
 }
 
-.welcome-staff {
-  margin-top: 1.5rem;
+.topbar .brand,
+.brand-light {
+  color: #fff;
 }
 
-.welcome-staff a {
-  color: #9aa7c7;
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, var(--navy), var(--plum));
+  color: #fff;
+  font-size: 0.95rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
 }
 
-/* Black button with a white sweep on hover. */
-.btn1 {
-  min-width: 9rem;
-  padding: 0 1.25rem;
-  font-size: 0.8rem;
+.who {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+.nav-pill {
+  display: inline-block;
+  padding: 0.35rem 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.9rem;
   font-weight: 500;
-  line-height: 2.8rem;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-pill:hover,
+.nav-pill.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.nav-pill-ghost {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* ---------- cards and common blocks ---------- */
+
+.card {
+  border-color: var(--line);
+  border-radius: 0.9rem;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.card-header {
+  background: #fff;
+  border-bottom-color: var(--line);
+  border-radius: 0.9rem 0.9rem 0 0 !important;
+  padding: 0.9rem 1rem;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.7rem 1rem;
+}
+
+.table thead th {
+  color: #6b7080;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: #fafbfc;
+}
+
+.form-control,
+.form-select {
+  border-radius: 0.55rem;
+  border-color: #d9dbe1;
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #4a4f5c;
+}
+
+.empty-state {
+  padding: 2.5rem 1.5rem;
+  border: 1px dashed #cfd2da;
+  border-radius: 0.9rem;
+  background: #fff;
+  color: #5b6070;
+  text-align: center;
+}
+
+.price {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.badge {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.room-economic { background: #e7f0ff; color: #1d4ed8; }
+.room-luxury { background: #f3e8ff; color: #7e22ce; }
+.room-vip { background: #16101f; color: #f5d27a; }
+
+.site-footer {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--line);
+  color: #7a7f8c;
+  font-size: 0.85rem;
+  background: #fff;
+}
+
+/* ---------- black sweep button from the original ---------- */
+
+.btn1 {
+  padding: 0.6rem 1.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -52,17 +177,16 @@
   overflow: hidden;
   color: #fff;
   background-color: #000;
-  border: 3px solid #000;
-  box-shadow: 0 0 0 1px #000 inset;
+  border: 2px solid #000;
+  border-radius: 0.55rem;
   transition: all 0.3s ease-in-out;
 }
 
 .effect01:hover,
 .effect01:focus-visible {
-  color: #222;
+  color: #111;
   background-color: #fff;
-  border-color: #666;
-  box-shadow: 0 0 0 3px #eee inset;
+  border-color: #111;
 }
 
 .effect01::after {
@@ -73,7 +197,7 @@
   width: 50px;
   height: 155px;
   background: #fff;
-  opacity: 0.8;
+  opacity: 0.6;
   transform: rotate(35deg);
   transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
@@ -81,72 +205,271 @@
 .effect01:hover::after {
   left: 120%;
   opacity: 0;
-  transform: rotate(40deg);
 }
 
-.screen-welcome .effect01 {
-  border-color: #f1f1f1;
-  box-shadow: none;
+/* ---------- welcome ---------- */
+
+.screen-welcome {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--night);
+  background-image: radial-gradient(circle at top left, var(--navy) 0%, var(--night) 55%, transparent),
+    radial-gradient(circle at bottom right, var(--plum) 0%, var(--night) 65%, transparent);
+  background-attachment: fixed;
+  color: #ececf1;
 }
 
-.button-left {
-  border-top-left-radius: 2rem !important;
-  border-bottom-left-radius: 2rem !important;
-}
-
-.button-right {
-  border-top-right-radius: 2rem !important;
-  border-bottom-right-radius: 2rem !important;
-}
-
-.form-narrow {
-  max-width: 30rem;
-  margin: 2rem auto;
-}
-
-.search-panel {
-  padding: 1.25rem 1.5rem;
-  border-radius: 1rem;
-  background: #f1f3f3;
-}
-
-.demo-box {
-  padding: 1rem 1.25rem;
-  border: 1px dashed #adb5bd;
-  border-radius: 0.5rem;
-}
-
-.manager-nav {
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  background: #212529;
-}
-
-.manager-nav a {
-  color: #dee2e6;
+.welcome-link {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
   text-decoration: none;
 }
 
-.manager-nav a:hover {
+.welcome-link:hover {
   color: #fff;
 }
 
+.welcome-hero {
+  padding: clamp(2.5rem, 10vh, 6rem) 0 3rem;
+}
+
+.eyebrow {
+  margin-bottom: 0.5rem;
+  color: #8fa6d8;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.huge-title {
+  margin: 0;
+  font-size: clamp(3.75rem, 12vw, 8.5rem);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #fff;
+}
+
+.welcome-sub {
+  max-width: 32rem;
+  margin: 1.25rem 0 2rem;
+  color: #bfc3d1;
+  font-size: 1.1rem;
+}
+
+.screen-welcome .effect01 {
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.effect-light {
+  color: #111;
+  background: #fff;
+}
+
+.effect-light:hover {
+  color: #fff;
+  background: transparent;
+}
+
+.glass-card {
+  padding: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+}
+
+.glass-card h2 {
+  color: #fff;
+}
+
+.glass-card p {
+  color: #b4b8c6;
+  font-size: 0.95rem;
+}
+
+.welcome-note {
+  margin: 2rem 0 3rem;
+  color: #8a8fa0;
+  font-size: 0.85rem;
+}
+
+.welcome-note code {
+  color: #f5d27a;
+}
+
+/* ---------- auth ---------- */
+
+.auth-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0 2rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 28rem;
+  border-top: 4px solid transparent;
+  border-image: linear-gradient(90deg, var(--navy), var(--plum)) 1;
+  box-shadow: 0 12px 32px rgba(16, 24, 40, 0.08);
+}
+
+.demo-box {
+  padding: 1rem;
+  border-radius: 0.7rem;
+  background: #f4f5f8;
+}
+
+/* ---------- booking ---------- */
+
+.search-bar {
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+}
+
+.room-card {
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.room-card:hover,
+.booking-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.08);
+}
+
+.booking-card {
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.room-no {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.summary-card {
+  position: sticky;
+  top: 5rem;
+}
+
+/* ---------- invoice ---------- */
+
+.totals {
+  max-width: 18rem;
+}
+
+.totals > div {
+  padding: 0.35rem 0;
+}
+
+.totals .grand {
+  margin-top: 0.4rem;
+  padding-top: 0.6rem;
+  border-top: 2px solid var(--ink);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* ---------- manager ---------- */
+
+.stat-label {
+  color: #6b7080;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.stat-value {
+  margin: 0.2rem 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.stat-note {
+  color: #7a7f8c;
+  font-size: 0.85rem;
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 180px;
+}
+
+.chart-day {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+}
+
+.bars {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+}
+
+.bar {
+  width: 40%;
+  max-width: 18px;
+  border-radius: 4px 4px 0 0;
+}
+
+.bar-rev,
+.key-rev {
+  background: linear-gradient(180deg, #3b6fd8, var(--navy));
+}
+
+.bar-exp,
+.key-exp {
+  background: #c9b8d6;
+}
+
+.chart-label {
+  margin-top: 0.35rem;
+  color: #7a7f8c;
+  font-size: 0.7rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.key {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-right: 0.3rem;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+
 @media (max-width: 575px) {
-  .welcome-buttons {
-    flex-direction: column;
-    width: 100%;
-    max-width: 18rem;
+  .chart-label {
+    font-size: 0.6rem;
   }
 
-  .welcome-buttons .btn {
-    border-radius: 2rem !important;
-    margin-bottom: 0.5rem;
+  .chart {
+    gap: 0.2rem;
   }
 }
 
 @media print {
-  nav,
-  footer {
+  .topbar,
+  .site-footer,
+  .page-head {
     display: none !important;
+  }
+
+  body.app {
+    background: #fff;
+  }
+
+  .invoice {
+    border: 0;
+    box-shadow: none;
   }
 }

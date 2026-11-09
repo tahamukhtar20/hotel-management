@@ -40,6 +40,7 @@ async function page(c: Context<Env>, title: string, body: ReturnType<typeof view
     views.layout(title, body, {
       session,
       cartCount: readCart(c).length,
+      current: new URL(c.req.url).pathname,
       notice: notice ?? NOTICES[c.req.query("n") ?? ""] ?? null,
     }),
   );

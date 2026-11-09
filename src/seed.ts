@@ -43,6 +43,12 @@ const CUSTOMERS = [
   ["Omar Farouk", "omar@example.com", "1985-11-30"],
   ["Grace Mensah", "grace@example.com", "1991-03-08"],
   ["Diego Alvarez", "diego@example.com", "1983-12-17"],
+  ["Ingrid Larsen", "ingrid@example.com", "1990-02-11"],
+  ["Samuel Okoro", "samuel@example.com", "1987-06-25"],
+  ["Mei Lin", "mei@example.com", "1993-10-02"],
+  ["Rafael Costa", "rafael@example.com", "1981-04-19"],
+  ["Aisha Rahman", "aisha@example.com", "1997-08-07"],
+  ["Jonas Weber", "jonas@example.com", "1984-12-29"],
 ] as const;
 
 // Two weeks of past stays plus current and upcoming ones. Each room gets back-to-back stays
@@ -55,7 +61,7 @@ ROOMS.forEach(([room], k) => {
   for (let j = 0, offset = -14 + (k % 4); offset <= 2; j++) {
     const nights = 2 + ((k + j) % 3);
     const n = BOOKINGS.length;
-    BOOKINGS.push([1 + (n % 6), room, offset, nights, offset <= 0 ? SERVICE_PICKS[n % 6] : []]);
+    BOOKINGS.push([1 + ((n * 5) % (CUSTOMERS.length - 1)), room, offset, nights, offset <= 0 ? SERVICE_PICKS[n % 6] : []]);
     offset += nights + 1 + ((k * 2 + j) % 3);
   }
 });

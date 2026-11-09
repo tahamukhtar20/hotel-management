@@ -167,7 +167,7 @@ export async function setBookingStatus(db: D1Database, bookingId: number, status
 /** Everything on the manager's page. */
 export async function managerOverview(db: D1Database) {
   const day = today();
-  const [current, staff, profit, expenses] = await db.batch([
+  const [current, staff, profit, expenses, occupancy] = await db.batch([
     db.prepare(
       `SELECT b.id, c.name, c.email, MIN(br.check_in) AS check_in, MAX(br.check_out) AS check_out, GROUP_CONCAT(br.room_no, ', ') AS rooms
        FROM bookings b JOIN customers c ON c.id = b.customer_id JOIN booked_rooms br ON br.booking_id = b.id
@@ -187,8 +187,16 @@ export async function managerOverview(db: D1Database) {
        FROM hotel_expenses e ORDER BY e.day DESC LIMIT 10`,
     ),
     db.prepare("SELECT * FROM hotel_expenses ORDER BY day DESC LIMIT 10"),
+    db.prepare(
+      `SELECT (SELECT COUNT(*) FROM booked_rooms br JOIN bookings b ON b.id = br.booking_id
+               WHERE b.status = 'active' AND br.check_in <= ? AND br.check_out > ?) AS occupied,
+              (SELECT COUNT(*) FROM rooms) AS total`,
+    ).bind(day, day),
   ]);
+  const occ = (occupancy.results as { occupied: number; total: number }[])[0];
   return {
+    occupied: occ.occupied,
+    totalRooms: occ.total,
     current: current.results as { id: number; name: string; email: string; check_in: string; check_out: string; rooms: string }[],
     staff: staff.results as { id: string; name: string; designation: string; salary: number }[],
     profit: (profit.results as { day: string; revenue: number; expenses: number }[]).map((r) => ({ ...r, profit: r.revenue - r.expenses })),
