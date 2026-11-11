@@ -23,9 +23,9 @@ erDiagram
 
 `hotel_expenses` holds daily management, restocking and salary costs. Schema: [`migrations/0001_init.sql`](migrations/0001_init.sql).
 
-- **Availability.** A room is free when no active booking overlaps the requested stay (`check_in < requested check-out` and `check_out > requested check-in`); check-out day is bookable again.
-- **Revenue** for a day is one night's price for every room occupied that night plus the services sold that day. Profit is revenue minus that day's expenses.
-- **Services** can only be added to bookings with guests in house today, and draw down stock, which is logged for restocking.
+- A room is free when no active booking overlaps the requested stay (`check_in < requested check-out` and `check_out > requested check-in`); check-out day is bookable again.
+- Revenue for a day is one night's price for every room occupied that night plus the services sold that day. Profit is revenue minus that day's expenses.
+- Services can only be added to bookings with guests in house today, and draw down stock, which is logged for restocking.
 
 ## Security
 

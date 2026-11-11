@@ -64,6 +64,7 @@ export function layout(
         <link rel="stylesheet" href="${FONT}" />
         <link rel="stylesheet" href="${BOOTSTRAP}" />
         <link rel="stylesheet" href="/style.css" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       </head>
       <body class="${opts.bare ? "screen-welcome" : "app d-flex flex-column min-vh-100"}">
         ${opts.bare ? "" : nav(opts.session ?? null, opts.cartCount ?? 0, opts.current ?? "")}
